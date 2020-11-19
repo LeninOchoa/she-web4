@@ -1,6 +1,8 @@
 <template>
   <v-app-bar dense absolute app dark color="#00469B">
-    <v-toolbar-title>SHE</v-toolbar-title>
+    <v-toolbar-title style="cursor: pointer" @click="$router.push('/')"
+      >SHE</v-toolbar-title
+    >
 
     <v-spacer></v-spacer>
     <v-toolbar-items v-if="isAutheticated" class="hidden-sm-and-down">
@@ -9,9 +11,10 @@
         :key="index"
         text
         flat
-        class="nav-item"
+        :to="modul.link"
+        nuxt
       >
-        <nuxt-link :to="modul.link">{{ modul.Name }}</nuxt-link>
+        {{ modul.Name }}
       </v-btn>
     </v-toolbar-items>
     <v-tooltip v-if="isAutheticated" bottom>
@@ -44,16 +47,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.nav-item a {
-  text-decoration: none;
-  color: white;
-}
-
-.nav-item a:hover,
-.nav-item a:active,
-.nav-item a.nuxt-link-active {
-  color: red;
-}
-</style>
