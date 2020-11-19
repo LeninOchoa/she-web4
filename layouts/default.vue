@@ -2,7 +2,7 @@
   <v-app dark>
     <TheHeader />
     <v-main>
-      <v-container>
+      <v-container class="container">
         <nuxt />
       </v-container>
     </v-main>
@@ -18,3 +18,15 @@ export default {
   components: { TheFooter, TheHeader },
 }
 </script>
+
+<style scoped>
+.container {
+  background-image: url('~assets/Titel-100_700x350.png');
+  height: 100%;
+  width: 100%;
+  position: relative;
+  padding: 30px;
+  background-position: center;
+  background-size: auto;
+}
+</style>

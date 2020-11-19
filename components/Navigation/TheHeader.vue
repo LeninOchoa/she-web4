@@ -10,7 +10,6 @@
         v-for="(modul, index) in modules"
         :key="index"
         text
-        flat
         :to="modul.link"
         nuxt
       >
