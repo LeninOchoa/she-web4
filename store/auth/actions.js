@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-import VueJwtDecode from 'vue-jwt-decode'
+
 export default {
   authenticateUser(vuexContext, authData) {
     const authUrl = process.env.baseUrl + '/token'
@@ -22,7 +22,6 @@ export default {
           'expirationDate',
           new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000
         )
-        console.log(VueJwtDecode.decode(result.data.access_token))
       })
       .catch((e) => {
         // eslint-disable-next-line no-console

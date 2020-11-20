@@ -1,6 +1,7 @@
 <template>
   <v-app dark>
     <TheHeader />
+    <TheSidenav />
     <v-main>
       <v-container class="container">
         <nuxt />
@@ -13,9 +14,10 @@
 <script>
 import TheHeader from '@/components/Navigation/TheHeader'
 import TheFooter from '@/components/Navigation/TheFooter'
+import TheSidenav from '@/components/Navigation/TheSidenav'
 export default {
   middleware: ['check-auth', 'auth'],
-  components: { TheFooter, TheHeader },
+  components: { TheSidenav, TheFooter, TheHeader },
 }
 </script>
 
