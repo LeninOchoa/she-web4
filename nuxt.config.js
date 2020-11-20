@@ -12,9 +12,10 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/se.ico' }],
   },
 
-  // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [],
+  loading: { color: '#fa923f', height: '4px' },
 
+  // Global CSS (https://go.nuxtjs.dev/config-css)
+  css: ['~assets/styles/main.css'],
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [],
 

@@ -1,15 +1,43 @@
 <template>
-  <div class="pa-4 text-center secondary rounded-0">
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet aperiam
-      consequatur cumque ea eius exercitationem facere, fuga hic illum, impedit
-      nulla odit omnis placeat quibusdam quidem quod ratione rem voluptates!
-    </p>
-  </div>
-</template>
+  <v-row justify="center" style="min-height: 160px">
+    <v-col class="shrink">
+      <v-btn class="ma-2" color="primary" @click="expand = !expand">
+        Expand Transition
+      </v-btn>
 
-<style>
-body {
-  margin: 0;
+      <v-expand-transition>
+        <v-card
+          v-show="expand"
+          height="100"
+          width="100"
+          class="mx-auto secondary"
+        ></v-card>
+      </v-expand-transition>
+    </v-col>
+
+    <div class="mx-4 hidden-sm-and-down"></div>
+
+    <v-col class="shrink">
+      <v-btn class="ma-2" color="secondary" @click="expand2 = !expand2">
+        Expand X Transition
+      </v-btn>
+
+      <v-expand-x-transition>
+        <v-card
+          v-show="expand2"
+          height="100"
+          width="100"
+          class="mx-auto secondary"
+        ></v-card>
+      </v-expand-x-transition>
+    </v-col>
+  </v-row>
+</template>
+<script>
+export default {
+  data: () => ({
+    expand: false,
+    expand2: false,
+  }),
 }
-</style>
+</script>
