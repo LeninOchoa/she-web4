@@ -1,11 +1,10 @@
 <template>
-  <p>VIEWER</p>
+  <ViewerDrawer></ViewerDrawer>
 </template>
 
 <script>
+import ViewerDrawer from '@/components/Viewer/ViewerDrawer'
 export default {
-  name: 'Index',
+  components: { ViewerDrawer },
 }
 </script>
-
-<style scoped></style>

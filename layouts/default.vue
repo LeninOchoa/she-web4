@@ -3,9 +3,9 @@
     <TheHeader />
     <TheSidenav />
     <v-main>
-      <v-container class="container">
+      <div class="loadBackground">
         <nuxt />
-      </v-container>
+      </div>
     </v-main>
     <TheFooter />
   </v-app>
@@ -21,14 +21,16 @@ export default {
 }
 </script>
 
-<style scoped>
-.container {
+<style>
+.loadBackground {
   background-image: url('~assets/Titel-100_700x350.png');
   height: 100%;
   width: 100%;
   position: relative;
-  padding: 30px;
   background-position: center;
-  background-size: auto;
+  background-size: contain;
+}
+body {
+  margin: 0;
 }
 </style>
