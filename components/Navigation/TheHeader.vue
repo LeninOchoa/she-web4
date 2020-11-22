@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar dense absolute app dark color="#00469B">
+    <v-app-bar dense absolute app clipped-left dark color="#00469B">
       <v-app-bar-nav-icon
         v-if="isAutheticated"
         class="navigation-drawer"
