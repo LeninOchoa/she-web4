@@ -1,11 +1,12 @@
 <template>
   <v-navigation-drawer
     id="style-1"
+    ref="drawer"
     v-model="drawer"
     app
     clipped
     class="drawer-style"
-    width="25%"
+    :width="navigation.width"
   >
     <v-list dense class="pt-3 white--text">
       <v-list-item
@@ -48,6 +49,10 @@ export default {
   data: () => ({
     sources: [],
     errors: [],
+    navigation: {
+      width: 365,
+      borderSize: 3,
+    },
   }),
 
   mounted() {
@@ -66,6 +71,8 @@ export default {
         console.log('created: Error')
         console.log(e)
       })
+    this.setBorderWidth()
+    this.setEvents()
   },
 
   methods: {
@@ -75,6 +82,54 @@ export default {
 
     selectSource(source) {
       this.$emit('selectsource', source)
+    },
+
+    setBorderWidth() {
+      const i = this.$refs.drawer.$el.querySelector(
+        '.v-navigation-drawer__border'
+      )
+      i.style.width = this.navigation.borderSize + 'px'
+      i.style.cursor = 'ew-resize'
+      i.style.backgroundColor = 'blue'
+    },
+    setEvents() {
+      const minSize = this.navigation.borderSize
+      const el = this.$refs.drawer.$el
+      const drawerBorder = el.querySelector('.v-navigation-drawer__border')
+      const direction = el.classList.contains('v-navigation-drawer--right')
+        ? 'right'
+        : 'left'
+
+      function resize(e) {
+        document.body.style.cursor = 'ew-resize'
+        const f =
+          direction === 'right'
+            ? document.body.scrollWidth - e.clientX
+            : e.clientX
+        el.style.width = f + 'px'
+      }
+
+      drawerBorder.addEventListener(
+        'mousedown',
+        (e) => {
+          if (e.offsetX < minSize) {
+            el.style.transition = 'initial'
+            document.addEventListener('mousemove', resize, false)
+          }
+        },
+        false
+      )
+
+      document.addEventListener(
+        'mouseup',
+        () => {
+          el.style.transition = ''
+          this.navigation.width = el.style.width
+          document.body.style.cursor = ''
+          document.removeEventListener('mousemove', resize, false)
+        },
+        false
+      )
     },
   },
 }
