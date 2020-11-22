@@ -8,21 +8,31 @@
     class="drawer-style"
     :width="navigation.width"
   >
+    <v-toolbar color="primary">
+      <v-container fluid>
+        <v-row align="center">
+          <v-col align-self="center" class="mt-5">
+            <v-select
+              v-model="select"
+              :items="items"
+              label="Baum"
+              item-text="Bezeichnung"
+              item-value="BaumId"
+              persistent-hint
+              return-object
+              single-line
+              @change="SelectTree"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-toolbar>
     <v-list dense class="pt-3 white--text">
       <v-list-item
         v-for="source in sources"
         :key="source.id"
         @click="selectSource(source.id)"
       >
-        <v-list-item-action>
-          <v-avatar size="32px">
-            <img
-              class="img-circle elevation-7 mb-1"
-              :src="getImgUrl(source.id)"
-            />
-          </v-avatar>
-        </v-list-item-action>
-
         <v-list-item-content>
           <v-list-item-title>{{ source.name }}</v-list-item-title>
         </v-list-item-content>
@@ -33,7 +43,7 @@
 
 <script>
 import axios from 'axios'
-
+import { mapActions } from 'vuex'
 export default {
   props: {
     apiKey: {
@@ -45,45 +55,45 @@ export default {
       default: true,
     },
   },
-
   data: () => ({
     sources: [],
     errors: [],
+    select: 0,
+    selectedFields: {},
     navigation: {
       width: 365,
       borderSize: 3,
     },
   }),
-
+  computed: {
+    items() {
+      return this.$store.state.viewer.treeData
+    },
+  },
   mounted() {
-    console.log('created:')
-    console.log(this.apiKey)
     axios
       .get('https://newsapi.org/v2/sources?language=en&apiKey=' + this.apiKey)
       .then((response) => {
         // this.articles = response.data.articles
         this.sources = response.data.sources
-        console.log('data:')
-        console.log(response.data.sources) // This will give you access to the full object
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log('created: Error')
         console.log(e)
       })
     this.setBorderWidth()
     this.setEvents()
+    this.GetTrees()
   },
 
   methods: {
-    getImgUrl(pic) {
-      return require('~/assets/images/' + pic + '.png')
-    },
-
+    ...mapActions({
+      trees: 'viewer/getTreeData',
+      treeFields: 'viewer/getTreeFields',
+    }),
     selectSource(source) {
       this.$emit('selectsource', source)
     },
-
     setBorderWidth() {
       const i = this.$refs.drawer.$el.querySelector(
         '.v-navigation-drawer__border'
@@ -130,6 +140,21 @@ export default {
         },
         false
       )
+    },
+    async GetTrees() {
+      if (this.$store.state.viewer.treeData.length === 0) await this.trees()
+    },
+    SelectTree() {
+      const fields = this.$store.state.viewer.treeFields.find(
+        (f) => f.treeId === this.select
+      )
+      if (fields === undefined) {
+        this.treeFields(this.select.BaumId).then((result) => {
+          this.selectedFields = result.data
+        })
+      } else {
+        this.selectedFields = fields
+      }
     },
   },
 }

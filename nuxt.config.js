@@ -40,6 +40,9 @@ export default {
   axios: {
     baseURL: process.env.BASE_URL || 'http://localhost:9000',
     credentials: false,
+    common: {
+      Accept: 'application/json, text/plain, */*',
+    },
   },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
