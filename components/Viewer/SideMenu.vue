@@ -58,18 +58,14 @@ export default {
   data: () => ({
     sources: [],
     errors: [],
-    select: 0,
+    select: null,
     selectedFields: {},
     navigation: {
       width: 365,
       borderSize: 3,
     },
+    items: [],
   }),
-  computed: {
-    items() {
-      return this.$store.state.viewer.treeData
-    },
-  },
   mounted() {
     axios
       .get('https://newsapi.org/v2/sources?language=en&apiKey=' + this.apiKey)
@@ -142,11 +138,25 @@ export default {
       )
     },
     async GetTrees() {
-      if (this.$store.state.viewer.treeData.length === 0) await this.trees()
+      if (this.$store.state.viewer.treeData.length === 0) {
+        await this.trees().then((res) => {
+          this.items = res
+          if (res.length === 1) {
+            this.select = this.items[0]
+            this.SelectTree()
+          }
+        })
+      } else {
+        this.items = this.$store.state.viewer.treeData
+        if (this.$store.state.viewer.treeData.length === 1) {
+          this.select = this.items[0]
+          this.SelectTree()
+        }
+      }
     },
     SelectTree() {
       const fields = this.$store.state.viewer.treeFields.find(
-        (f) => f.treeId === this.select
+        (f) => f.treeId === this.select.BaumId
       )
       if (fields === undefined) {
         this.treeFields(this.select.BaumId).then((result) => {
@@ -161,30 +171,6 @@ export default {
 </script>
 
 <style scoped>
-#style-1::-webkit-scrollbar {
-  width: 6px;
-  background-color: #f5f5f5;
-}
-
-#style-1::-webkit-scrollbar-thumb {
-  background-color: #f90;
-  background-image: -webkit-linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.2) 25%,
-    transparent 25%,
-    transparent 50%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.2) 75%,
-    transparent 75%,
-    transparent
-  );
-}
-
-#style-1::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #f5f5f5;
-}
-
 .drawer-style {
   background-color: #2196f3 !important;
   border-color: #2196f3 !important;

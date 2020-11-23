@@ -71,8 +71,8 @@ export default {
       valid: true,
       showPassword: false,
       user: {
-        login: '',
-        password: '',
+        login: 'test',
+        password: '123456',
       },
     }
   },

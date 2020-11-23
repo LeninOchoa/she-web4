@@ -36,8 +36,6 @@ export default {
       if (tCopy[0] === '"') {
         tCopy = tCopy.substring(1, tCopy.length - 1)
       }
-      console.log(`Bearer  ${tCopy}`)
-      console.log(apiUrl)
       return await this.$axios({
         method: 'get',
         url: apiUrl,
