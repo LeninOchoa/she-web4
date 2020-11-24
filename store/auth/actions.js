@@ -1,10 +1,10 @@
 import Cookies from 'js-cookie'
 
 export default {
-  authenticateUser(vuexContext, authData) {
+  async authenticateUser(vuexContext, authData) {
     const authUrl = process.env.baseUrl + '/token'
     const body = `grant_type=password&username=${authData.login}&password=${authData.password}&scope=viewer`
-    return this.$axios({
+    return await this.$axios({
       method: 'post',
       url: authUrl,
       data: body,

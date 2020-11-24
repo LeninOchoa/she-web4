@@ -5,4 +5,11 @@ export default {
   modules(state) {
     return state.modules
   },
+  token(state) {
+    let tCopy = state.token
+    if (tCopy[0] === '"') {
+      tCopy = tCopy.substring(1, tCopy.length - 1)
+    }
+    return tCopy
+  },
 }

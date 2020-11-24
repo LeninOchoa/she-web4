@@ -7,7 +7,7 @@
       @selectsource="setResource"
     ></SideMenu>
 
-    <v-toolbar fixed color="primary" class="elevation-2">
+    <v-toolbar color="primary" class="elevation-2" flat>
       <v-app-bar-nav-icon
         class="white--text"
         @click="drawer = !drawer"

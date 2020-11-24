@@ -6,8 +6,18 @@ export default {
   setSearchfields(state, payload) {
     const fieldObject = {
       treeId: payload.tree,
-      fileds: payload.data,
+      fields: payload.data,
     }
     state.treeFields.push(fieldObject)
+  },
+
+  setCurrentFields(state, payload) {
+    state.currentFields = payload
+  },
+  setRootNodes(state, payload) {
+    state.rootNodes = payload
+  },
+  setSearchParameter(state, payload) {
+    state.searchParameter = payload
   },
 }

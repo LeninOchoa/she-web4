@@ -1,14 +1,12 @@
 <template>
   <v-navigation-drawer
-    id="style-1"
     ref="drawer"
     v-model="drawer"
     app
     clipped
-    class="drawer-style"
     :width="navigation.width"
   >
-    <v-toolbar color="primary">
+    <v-toolbar color="primary" class="elevation-2" flat>
       <v-container fluid>
         <v-row align="center">
           <v-col align-self="center" class="mt-5">
@@ -21,75 +19,58 @@
               persistent-hint
               return-object
               single-line
+              dark
               @change="SelectTree"
             ></v-select>
           </v-col>
         </v-row>
       </v-container>
     </v-toolbar>
-    <v-list dense class="pt-3 white--text">
-      <v-list-item
-        v-for="source in sources"
-        :key="source.id"
-        @click="selectSource(source.id)"
-      >
-        <v-list-item-content>
-          <v-list-item-title>{{ source.name }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
+    <v-tabs v-model="activeTab" grow>
+      <v-tab> Suche </v-tab>
+      <v-tab-item>
+        <Search @search="Search"></Search>
+      </v-tab-item>
+      <v-tab> Baum </v-tab>
+      <v-tab-item>
+        <Treeview></Treeview>
+      </v-tab-item>
+    </v-tabs>
   </v-navigation-drawer>
 </template>
 
 <script>
-import axios from 'axios'
 import { mapActions } from 'vuex'
+import Search from '@/components/She/Search'
+import Treeview from '@/components/Viewer/Treeview'
 export default {
+  components: { Search, Treeview },
   props: {
-    apiKey: {
-      type: String,
-      default: '',
-    },
     drawer: {
       type: Boolean,
       default: true,
     },
   },
   data: () => ({
-    sources: [],
-    errors: [],
+    activeTab: 0,
     select: null,
-    selectedFields: {},
     navigation: {
       width: 365,
-      borderSize: 3,
+      borderSize: 1,
     },
     items: [],
   }),
   mounted() {
-    axios
-      .get('https://newsapi.org/v2/sources?language=en&apiKey=' + this.apiKey)
-      .then((response) => {
-        // this.articles = response.data.articles
-        this.sources = response.data.sources
-      })
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.log(e)
-      })
     this.setBorderWidth()
     this.setEvents()
     this.GetTrees()
   },
-
   methods: {
     ...mapActions({
       trees: 'viewer/getTreeData',
       treeFields: 'viewer/getTreeFields',
+      search: 'viewer/searchNodes',
     }),
-    selectSource(source) {
-      this.$emit('selectsource', source)
-    },
     setBorderWidth() {
       const i = this.$refs.drawer.$el.querySelector(
         '.v-navigation-drawer__border'
@@ -150,29 +131,24 @@ export default {
         this.items = this.$store.state.viewer.treeData
         if (this.$store.state.viewer.treeData.length === 1) {
           this.select = this.items[0]
-          this.SelectTree()
+          await this.SelectTree()
         }
       }
     },
-    SelectTree() {
+    async SelectTree() {
       const fields = this.$store.state.viewer.treeFields.find(
         (f) => f.treeId === this.select.BaumId
       )
       if (fields === undefined) {
-        this.treeFields(this.select.BaumId).then((result) => {
-          this.selectedFields = result.data
-        })
-      } else {
-        this.selectedFields = fields
+        await this.treeFields(this.select.BaumId)
       }
+    },
+    async Search(param) {
+      param.treeId = this.select.BaumId
+      await this.search(param).then((res) => {
+        if (res.length > 0) this.activeTab = 1
+      })
     },
   },
 }
 </script>
-
-<style scoped>
-.drawer-style {
-  background-color: #2196f3 !important;
-  border-color: #2196f3 !important;
-}
-</style>

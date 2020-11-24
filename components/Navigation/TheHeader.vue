@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-app-bar dense absolute app clipped-left dark color="#00469B">
+    <v-app-bar dense app clipped-left dark color="#00469B" fixed>
       <v-app-bar-nav-icon
         v-if="isAutheticated"
         class="navigation-drawer"
         @click="onToggle"
       ></v-app-bar-nav-icon>
-      <v-toolbar-title style="cursor: pointer" @click="$router.push('/')"
-        >SHE</v-toolbar-title
+      <v-toolbar-title style="cursor: pointer">
+        <v-btn text to="/" nuxt> SHE </v-btn></v-toolbar-title
       >
       <v-spacer></v-spacer>
       <v-toolbar-items v-if="isAutheticated" class="navigation-items">
