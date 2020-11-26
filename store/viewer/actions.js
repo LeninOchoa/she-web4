@@ -43,24 +43,27 @@ export default {
       },
     })
       .then((result) => {
-        /*
-        const ico = result.data.map((obj) => ({ ...obj, ico: 'pat' }))
-        const name = ico.map((obj) => ({ ...obj, name: obj.Text }))
-        const rest = name.map((obj) => ({ ...obj, children: [] }))
-        */
-        const rest = JSON.parse(JSON.stringify(result.data))
         const nodes = []
-        for (const data in rest) {
+        for (const data in result.data) {
           const temp = {
             ico: 'pat',
-            name: rest[data].Text,
+            name: result.data[data].Text,
             children: [],
-            data: rest[data],
+            data: result.data[data],
+            id: result.data[data].PKID[0],
+            files: [],
+            imageUrls: [],
           }
+          /*
+          vuexContext
+            .dispatch('LoadLowerLayer', result.data[data].EbeneID)
+            .then((lower) => {
+              temp.layer = lower
+            })
+          */
           nodes.push(temp)
         }
         console.log('searchNodes', nodes)
-        vuexContext.commit('setRootNodes', nodes)
         vuexContext.commit('setSearchParameter', params)
         return nodes
       })
@@ -101,7 +104,6 @@ export default {
         return Promise.reject(error.response)
       })
   },
-
   async LoadChildren(vuexContext, parameter) {
     const apiUrl =
       process.env.baseUrl +
@@ -128,27 +130,157 @@ export default {
       },
     })
       .then((result) => {
-        const neWd = result.data.map((x) => {
+        const rest = result.data.map((x) => {
           if (x.ElektronischerStatusID === 2) {
             return { ...x, ico: 'auf' }
+          } else if (x.ElektronischerStatusID === 4) {
+            return { ...x, ico: 'rest' }
+          } else if (x.ElektronischerStatusID === 1) {
+            return { ...x, ico: 'rest' }
+          } else if (x.ElektronischerStatusID === 100) {
+            return { ...x, ico: 'allg' }
           } else {
-            return { ...x, ico: 'pat' }
+            return { ...x, ico: 'rest' }
           }
         })
-        const rest = JSON.parse(JSON.stringify(neWd))
+
         const nodes = []
-        for (const data in rest) {
-          const temp = {
-            ico: rest[data].ico,
-            name: rest[data].Text,
-            children: [],
-            data: rest[data],
+        for (const index in rest) {
+          if (rest[index].Files !== null) {
+            parameter.parentNode.files = rest[index].Files
+            continue
           }
+          const temp = {
+            ico: rest[index].ico,
+            name: rest[index].Text,
+            children: [],
+            data: rest[index],
+            id: rest[index].PKID[0],
+            files: [],
+            imageUrls: [],
+          }
+          /*
+          vuexContext
+            .dispatch('LoadLowerLayer', rest[data].EbeneID)
+            .then((lower) => {
+              console.log('LoadChildren-lower', lower)
+              if (lower[0].BelegEbene) temp.ico = 'bel'
+              temp.layer = lower
+            })
+           */
           nodes.push(temp)
         }
-        // eslint-disable-next-line no-console
+        console.log('LoadChildren-4')
+        if (parameter.parentNode.files > 0 && parameter.imageUrls === 0) {
+          for (const file in parameter.parentNode.files) {
+            const par = { serverpath: parameter.files[file], size: 150 }
+            this.getImage(par).then((result) => {
+              const imageUrl = URL.createObjectURL(result)
+              console.log('fetchUsers', imageUrl)
+              parameter.imageUrls.push(imageUrl)
+            })
+          }
+        }
+        console.log('LoadChildren-5')
+
         console.log('LoadChildren', nodes)
+
         return nodes
+      })
+      .catch((error) => {
+        return Promise.reject(error.response)
+      })
+  },
+
+  /*
+  async LoadLowerLayer(vuexContext, ebeneId) {
+    if (vuexContext.state.lowerLayer[ebeneId] !== undefined) {
+      return vuexContext.state.lowerLayer[ebeneId]
+    }
+    const apiUrl =
+      process.env.baseUrl + '/api/DocumentViewer/GetLowerLayer/' + ebeneId
+    const token = vuexContext.rootGetters['auth/token']
+    if (token === null) return
+
+    return await this.$axios({
+      method: 'get',
+      url: apiUrl,
+      headers: {
+        authorization: `Bearer  ${token}`,
+        'If-Modified-Since': 'Mon, 26 Jul 1997 05:00:00 GMT',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        Expires: 'Sat, 01 Jan 2000 00:00:00 GMT',
+      },
+    })
+      .then((result) => {
+        vuexContext.commit('AddLowerLayer', {
+          ebeneID: ebeneId,
+          layer: result.data,
+        })
+        return result.data
+      })
+      .catch((error) => {
+        return Promise.reject(error.response)
+      })
+  },
+*/
+  async GetNodeData(vuexContext, parameter) {
+    const apiUrl =
+      process.env.baseUrl +
+      '/api/DocumentViewer/GetNodeData/' +
+      parameter.ebeneId
+
+    const token = vuexContext.rootGetters['auth/token']
+    if (token === null) return
+
+    return await this.$axios({
+      method: 'post',
+      url: apiUrl,
+      data: parameter.pkids,
+      headers: {
+        authorization: `Bearer  ${token}`,
+        'If-Modified-Since': 'Mon, 26 Jul 1997 05:00:00 GMT',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        Expires: 'Sat, 01 Jan 2000 00:00:00 GMT',
+      },
+    })
+      .then((result) => {
+        return result.data
+      })
+      .catch((error) => {
+        return Promise.reject(error.response)
+      })
+  },
+
+  async getImageBinary(vuexContext, parameter) {
+    const apiUrl =
+      process.env.baseUrl +
+      `/api/DocumentViewer/LoadImageBinary?id=${btoa(
+        parameter.serverpath
+      )}&size=${parameter.size}`
+
+    const token = vuexContext.rootGetters['auth/token']
+    if (token === null) return
+
+    console.log('getImageBinary', apiUrl)
+
+    return await this.$axios({
+      responseType: 'blob',
+      method: 'get',
+      url: apiUrl,
+      headers: {
+        authorization: `Bearer  ${token}`,
+        'If-Modified-Since': 'Mon, 26 Jul 1997 05:00:00 GMT',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        Expires: 'Sat, 01 Jan 2000 00:00:00 GMT',
+      },
+    })
+      .then((result) => {
+        console.log('getImageBinary', result.data)
+        return result.data
       })
       .catch((error) => {
         return Promise.reject(error.response)

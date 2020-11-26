@@ -6,8 +6,8 @@
     :open.sync="open"
     activatable
     transition
-    hoverable
-    item-key="PKID[0]"
+    dense
+    item-key="id"
     open-on-click
   >
     <template v-slot:prepend="{ item }">
@@ -19,25 +19,43 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 export default {
-  data: () => ({
-    active: [],
-    open: [],
-    files: {
-      pat: 'mdi mdi-account',
-    },
-  }),
-  computed: {
-    items() {
-      return JSON.parse(JSON.stringify(this.$store.state.viewer.rootNodes))
+  props: {
+    items: {
+      type: Array,
+      required: true,
     },
   },
+  data: () => ({
+    files: {
+      pat: 'mdi mdi-account',
+      auf: 'mdi-seat-flat',
+      allg: 'mdi-account-star',
+      bel: 'mdi-file-multiple',
+      rest: 'mdi-folder',
+    },
+    active: [],
+    open: [],
+  }),
+  /*
+  computed: {
+    items() {
+      return this.$store.state.viewer.rootNodes
+    },
+  },
+  */
   methods: {
     ...mapActions({
       load: 'viewer/LoadChildren',
+      nodeData: 'viewer/GetNodeData',
+      getImage: 'viewer/getImageBinary',
+    }),
+    ...mapMutations({
+      loadInViewer: 'viewer/loadInViewer',
     }),
     async fetchUsers(item) {
+      console.log('fetchUsers-0', item)
       const param = {
         treeId: this.$store.state.viewer.searchParameter.treeId,
         ParentNode: {
@@ -49,14 +67,24 @@ export default {
         Sfs: JSON.parse(
           JSON.stringify(this.$store.state.viewer.searchParameter.data)
         ),
+        parentNode: item,
       }
+      console.log('fetchUsers-1')
       await this.load(param).then((res) => {
-        const nodes = JSON.parse(JSON.stringify(res))
-        for (const node in nodes) {
-          item.children.push(nodes[node])
+        if (res.length === 0) {
+          item.children = []
+          console.log('fetchUsers-2')
+          return
+        }
+        for (const node in res) {
+          console.log('fetchUsers-3')
+          item.children.push(JSON.parse(JSON.stringify(res[node])))
+          console.log('fetchUsers-4')
         }
       })
-      console.log('TEST', item)
+      console.log('fetchUsers-5')
+      this.loadInViewer(item)
+      console.log('fetchUsers-6')
     },
   },
 }

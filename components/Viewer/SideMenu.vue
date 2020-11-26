@@ -33,7 +33,7 @@
       </v-tab-item>
       <v-tab> Baum </v-tab>
       <v-tab-item>
-        <Treeview></Treeview>
+        <Treeview :items="root"></Treeview>
       </v-tab-item>
     </v-tabs>
   </v-navigation-drawer>
@@ -56,9 +56,10 @@ export default {
     select: null,
     navigation: {
       width: 365,
-      borderSize: 1,
+      borderSize: 2,
     },
     items: [],
+    root: [],
   }),
   mounted() {
     this.setBorderWidth()
@@ -147,6 +148,10 @@ export default {
       param.treeId = this.select.BaumId
       await this.search(param).then((res) => {
         if (res.length > 0) this.activeTab = 1
+        this.root = []
+        setTimeout(() => {
+          this.root = JSON.parse(JSON.stringify(res))
+        }, 500)
       })
     },
   },
