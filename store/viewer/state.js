@@ -4,4 +4,5 @@ export default () => ({
   currentFields: [],
   searchParameter: [],
   images: [],
+  tree: [],
 })

@@ -33,14 +33,14 @@
       </v-tab-item>
       <v-tab> Baum </v-tab>
       <v-tab-item>
-        <Treeview :items="root"></Treeview>
+        <Treeview></Treeview>
       </v-tab-item>
     </v-tabs>
   </v-navigation-drawer>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 import Search from '@/components/She/Search'
 import Treeview from '@/components/Viewer/Treeview'
 export default {
@@ -59,7 +59,6 @@ export default {
       borderSize: 2,
     },
     items: [],
-    root: [],
   }),
   mounted() {
     this.setBorderWidth()
@@ -72,6 +71,7 @@ export default {
       treeFields: 'viewer/getTreeFields',
       search: 'viewer/searchNodes',
     }),
+    ...mapMutations({ tree: 'viewer/setTree' }),
     setBorderWidth() {
       const i = this.$refs.drawer.$el.querySelector(
         '.v-navigation-drawer__border'
@@ -148,9 +148,9 @@ export default {
       param.treeId = this.select.BaumId
       await this.search(param).then((res) => {
         if (res.length > 0) this.activeTab = 1
-        this.root = []
+        this.tree([])
         setTimeout(() => {
-          this.root = JSON.parse(JSON.stringify(res))
+          this.tree(res)
         }, 500)
       })
     },

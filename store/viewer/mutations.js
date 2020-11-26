@@ -18,4 +18,7 @@ export default {
   loadInViewer(state, payload) {
     state.images = payload
   },
+  setTree(state, payload) {
+    state.tree = payload
+  },
 }

@@ -21,12 +21,6 @@
 <script>
 import { mapActions, mapMutations } from 'vuex'
 export default {
-  props: {
-    items: {
-      type: Array,
-      required: true,
-    },
-  },
   data: () => ({
     files: {
       pat: 'mdi mdi-account',
@@ -38,13 +32,11 @@ export default {
     active: [],
     open: [],
   }),
-  /*
   computed: {
     items() {
-      return this.$store.state.viewer.rootNodes
+      return this.$store.state.viewer.tree
     },
   },
-  */
   methods: {
     ...mapActions({
       load: 'viewer/LoadChildren',
