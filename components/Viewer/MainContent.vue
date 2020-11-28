@@ -1,67 +1,63 @@
 <template>
-  <v-layout row wrap align-center>
-    <v-flex xs8 offset-md2>
-      <div v-for="article in articles" :key="article.title">
-        <v-card class="my-3" hover data-aos="zoom-in" data-aos-easing="ease">
-          <v-img height="350px" :src="article.urlToImage"></v-img>
-          <v-container fill-height fluid>
-            <v-layout>
-              <v-flex xs12 align-end d-flex>
-                <span class="headline">{{ article.title }}</span>
-              </v-flex>
-            </v-layout>
-          </v-container>
-          <v-card-text>
-            {{ article.description }}
-          </v-card-text>
-          <v-card-actions>
-            <v-chip small color="secondary" class="white--text">
-              {{ article.source.name }}
-            </v-chip>
-
-            <v-spacer></v-spacer>
-
-            <v-btn icon class="red--text">
-              <v-icon small>fa-reddit</v-icon>
-            </v-btn>
-            <v-btn icon class="light-blue--text">
-              <v-icon small>fa-twitter</v-icon>
-            </v-btn>
-            <v-btn icon class="blue--text text--darken-4">
-              <v-icon small>fa-facebook</v-icon>
-            </v-btn>
-
-            <v-btn icon class="red--text">
-              <v-icon small>fa-google-plus</v-icon>
-            </v-btn>
-
-            <v-btn icon class="blue--text text--darken-4">
-              <v-icon small>fa-linkedin</v-icon>
-            </v-btn>
-
-            <v-spacer></v-spacer>
-
-            <v-btn
-              small
-              replace
-              color="info"
-              :href="article.url"
-              target="_blank"
-              >Read More</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </div>
-    </v-flex>
-  </v-layout>
+  <div id="viewer-image" ref="image" style="width: 100%; height: 800px" />
 </template>
 
 <script>
+import OpenSeadragon from 'openseadragon'
+window.OpenSeadragon = OpenSeadragon
 export default {
-  props: {
-    articles: {
-      type: Array,
-      default: null,
+  name: 'Viewer',
+  data() {
+    return {
+      viewer: null,
+      contentBuffer: [],
+      ima: null,
+      images: [],
+      node: {},
+      data: { color: '#673AB7' },
+    }
+  },
+  computed: {
+    storeImages() {
+      return this.$store.state.viewer.images
+    },
+  },
+  watch: {
+    storeImages(newCount, oldCount) {
+      this.node = newCount
+      this.ShowPictures()
+    },
+  },
+  mounted() {
+    this.initViewer()
+  },
+  methods: {
+    ShowPictures() {
+      this.images = []
+      this.viewer.world.resetItems()
+      this.viewer.tileSources = []
+
+      for (let index = 0; index < this.node.imageUrls.length; ++index) {
+        const item = this.node.imageUrls[index]
+        this.images.push({
+          type: 'image',
+          url: item,
+        })
+      }
+      this.viewer.open(this.images)
+    },
+    initViewer() {
+      this.viewer = OpenSeadragon({
+        id: 'viewer-image',
+        animationTime: 0.4,
+        prefixUrl: '/assets/images/',
+        showNavigator: true,
+        sequenceMode: true,
+        showReferenceStrip: true,
+        referenceStripScroll: 'vertical',
+        preserveViewport: true,
+        tileSources: this.files,
+      })
     },
   },
 }

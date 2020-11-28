@@ -63,7 +63,6 @@ export default {
           */
           nodes.push(temp)
         }
-        console.log('searchNodes', nodes)
         vuexContext.commit('setSearchParameter', params)
         return nodes
       })
@@ -129,7 +128,7 @@ export default {
         Expires: 'Sat, 01 Jan 2000 00:00:00 GMT',
       },
     })
-      .then((result) => {
+      .then(async (result) => {
         const rest = result.data.map((x) => {
           if (x.ElektronischerStatusID === 2) {
             return { ...x, ico: 'auf' }
@@ -143,11 +142,11 @@ export default {
             return { ...x, ico: 'rest' }
           }
         })
-
+        let files = []
         const nodes = []
         for (const index in rest) {
           if (rest[index].Files !== null) {
-            parameter.parentNode.files = rest[index].Files
+            files = [...files, ...rest[index].Files]
             continue
           }
           const temp = {
@@ -159,31 +158,34 @@ export default {
             files: [],
             imageUrls: [],
           }
-          /*
-          vuexContext
-            .dispatch('LoadLowerLayer', rest[data].EbeneID)
-            .then((lower) => {
-              console.log('LoadChildren-lower', lower)
-              if (lower[0].BelegEbene) temp.ico = 'bel'
-              temp.layer = lower
-            })
-           */
           nodes.push(temp)
         }
-        console.log('LoadChildren-4')
-        if (parameter.parentNode.files > 0 && parameter.imageUrls === 0) {
-          for (const file in parameter.parentNode.files) {
-            const par = { serverpath: parameter.files[file], size: 150 }
-            this.getImage(par).then((result) => {
-              const imageUrl = URL.createObjectURL(result)
-              console.log('fetchUsers', imageUrl)
-              parameter.imageUrls.push(imageUrl)
-            })
-          }
-        }
-        console.log('LoadChildren-5')
 
-        console.log('LoadChildren', nodes)
+        vuexContext.commit('AddFilesToNode', {
+          node: parameter.parentNode,
+          files,
+        })
+        if (files.length > 0) {
+          const image = []
+          for (const file in files) {
+            const par = {
+              serverpath: files[file],
+              size: 150,
+            }
+            await vuexContext
+              .dispatch('getImageBinary', par)
+              .then((result) => {
+                const imageUrl = URL.createObjectURL(result)
+                image.push(imageUrl)
+              })
+              // eslint-disable-next-line no-console
+              .catch((e) => console.log('error', e))
+          }
+          vuexContext.commit('AddImageUrlsToNode', {
+            node: parameter.parentNode,
+            imageUrls: image,
+          })
+        }
 
         return nodes
       })
@@ -191,7 +193,6 @@ export default {
         return Promise.reject(error.response)
       })
   },
-
   /*
   async LoadLowerLayer(vuexContext, ebeneId) {
     if (vuexContext.state.lowerLayer[ebeneId] !== undefined) {
@@ -253,7 +254,6 @@ export default {
         return Promise.reject(error.response)
       })
   },
-
   async getImageBinary(vuexContext, parameter) {
     const apiUrl =
       process.env.baseUrl +
@@ -263,8 +263,6 @@ export default {
 
     const token = vuexContext.rootGetters['auth/token']
     if (token === null) return
-
-    console.log('getImageBinary', apiUrl)
 
     return await this.$axios({
       responseType: 'blob',
@@ -279,7 +277,6 @@ export default {
       },
     })
       .then((result) => {
-        console.log('getImageBinary', result.data)
         return result.data
       })
       .catch((error) => {

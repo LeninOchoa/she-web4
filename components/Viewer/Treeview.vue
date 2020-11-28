@@ -5,10 +5,10 @@
     :load-children="fetchUsers"
     :open.sync="open"
     activatable
-    transition
     dense
     item-key="id"
     open-on-click
+    transition
   >
     <template v-slot:prepend="{ item }">
       <v-icon>
@@ -36,6 +36,10 @@ export default {
     items() {
       return this.$store.state.viewer.tree
     },
+    selected() {
+      console.log('selected')
+      return true
+    },
   },
   methods: {
     ...mapActions({
@@ -45,9 +49,9 @@ export default {
     }),
     ...mapMutations({
       loadInViewer: 'viewer/loadInViewer',
+      setChildren: 'viewer/addChildren',
     }),
     async fetchUsers(item) {
-      console.log('fetchUsers-0', item)
       const param = {
         treeId: this.$store.state.viewer.searchParameter.treeId,
         ParentNode: {
@@ -59,24 +63,21 @@ export default {
         Sfs: JSON.parse(
           JSON.stringify(this.$store.state.viewer.searchParameter.data)
         ),
-        parentNode: item,
+        parentNode: JSON.parse(JSON.stringify(item)),
       }
-      console.log('fetchUsers-1')
+
       await this.load(param).then((res) => {
         if (res.length === 0) {
-          item.children = []
-          console.log('fetchUsers-2')
+          this.setChildren({ parent: item, children: [] })
           return
         }
-        for (const node in res) {
-          console.log('fetchUsers-3')
-          item.children.push(JSON.parse(JSON.stringify(res[node])))
-          console.log('fetchUsers-4')
-        }
+        this.setChildren({ parent: item, children: res })
       })
-      console.log('fetchUsers-5')
+
       this.loadInViewer(item)
-      console.log('fetchUsers-6')
+    },
+    updateActive() {
+      console.log('updateActive')
     },
   },
 }

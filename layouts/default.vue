@@ -3,7 +3,7 @@
     <TheHeader />
     <TheSidenav />
     <v-main>
-      <div class="loadBackground">
+      <div>
         <nuxt />
       </div>
     </v-main>
@@ -20,36 +20,3 @@ export default {
   components: { TheSidenav, TheFooter, TheHeader },
 }
 </script>
-
-<style>
-.loadBackground {
-  background-image: url('~assets/Titel-100_700x350.png');
-  height: 100%;
-  width: 100%;
-  position: relative;
-  background-position: center;
-  background-size: contain;
-}
-body {
-  margin: 0;
-}
-/* width */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-</style>
