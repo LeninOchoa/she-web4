@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
-import { searchRootNodes } from '@/modules/viewer/ViewerService'
+import { mapMutations } from 'vuex'
+import { searchRootNodes, loadChildren } from '@/modules/viewer/ViewerService'
 export default {
   data: () => ({
     files: {
@@ -41,19 +41,12 @@ export default {
   },
   watch: {
     searchParamter(newValue, oldValue) {
-      console.log('watch-searchParamter', newValue)
       this.rootNodes(newValue)
     },
   },
   methods: {
-    ...mapActions({
-      load: 'viewer/LoadChildren',
-      nodeData: 'viewer/GetNodeData',
-      getImage: 'viewer/getImageBinary',
-    }),
     ...mapMutations({
       loadInViewer: 'viewer/loadInViewer',
-      setChildren: 'viewer/addChildren',
     }),
     async fetchUsers(item) {
       const param = {
@@ -67,19 +60,26 @@ export default {
         Sfs: JSON.parse(
           JSON.stringify(this.$store.state.viewer.searchParameter.data)
         ),
-        parentNode: JSON.parse(JSON.stringify(item)),
       }
-
-      await this.load(param).then((res) => {
-        if (res.length === 0) {
-          this.setChildren({ parent: item, children: [] })
-          return
+      const token = this.$store.state.auth.token
+      await loadChildren(param, token).then((res) => {
+        if (res.nodes.length !== 0) {
+          item.children = res.nodes
+        } else {
+          item.children = []
         }
-        this.setChildren({ parent: item, children: res })
-      })
 
-      this.loadInViewer(item)
+        if (res.files.length > 0) {
+          if (item.files.length === 0) {
+            item.files = res.files
+            item.imageUrls = res.images
+            this.loadInViewer(item.imageUrls)
+            console.log('fetchUsers-item-IF2', item)
+          }
+        }
+      })
     },
+
     async rootNodes(param) {
       const token = this.$store.state.auth.token
       await searchRootNodes(param, token).then((res) => {

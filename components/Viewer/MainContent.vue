@@ -1,5 +1,9 @@
 <template>
-  <div id="viewer-image" ref="image" style="width: 100%; height: 800px" />
+  <div
+    id="viewer-image"
+    ref="image"
+    style="width: 100%; height: 800px; position: relative"
+  />
 </template>
 
 <script>
@@ -13,7 +17,7 @@ export default {
       contentBuffer: [],
       ima: null,
       images: [],
-      node: {},
+      imageUrls: {},
       data: { color: '#673AB7' },
     }
   },
@@ -24,12 +28,12 @@ export default {
   },
   watch: {
     storeImages(newCount, oldCount) {
-      this.node = newCount
+      this.imageUrls = newCount
       this.ShowPictures()
     },
   },
   mounted() {
-    this.initViewer()
+    if (this.viewer === null) this.initViewer()
   },
   methods: {
     ShowPictures() {
@@ -37,8 +41,8 @@ export default {
       this.viewer.world.resetItems()
       this.viewer.tileSources = []
 
-      for (let index = 0; index < this.node.imageUrls.length; ++index) {
-        const item = this.node.imageUrls[index]
+      for (let index = 0; index < this.imageUrls.length; ++index) {
+        const item = this.imageUrls[index]
         this.images.push({
           type: 'image',
           url: item,
