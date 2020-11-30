@@ -67,8 +67,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      trees: 'viewer/getTreeData',
-      treeFields: 'viewer/getTreeFields',
+      getTreeData: 'viewer/getTreeData',
+      getTreeFields: 'viewer/getTreeFields',
       search: 'viewer/searchNodes',
     }),
     ...mapMutations({ tree: 'viewer/setTree' }),
@@ -121,7 +121,7 @@ export default {
     },
     async GetTrees() {
       if (this.$store.state.viewer.trees.length === 0) {
-        await this.trees().then((res) => {
+        await this.getTreeData().then((res) => {
           this.items = res
           if (res.length === 1) {
             this.select = this.items[0]
@@ -141,11 +141,12 @@ export default {
         (f) => f.treeId === this.select.BaumId
       )
       if (fields === undefined) {
-        await this.treeFields(this.select.BaumId)
+        await this.getTreeFields(this.select.BaumId)
       }
     },
     async Search(param) {
       param.treeId = this.select.BaumId
+
       await this.search(param).then((res) => {
         if (res.length > 0) this.activeTab = 1
         this.tree([])
