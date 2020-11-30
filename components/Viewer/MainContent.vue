@@ -34,13 +34,13 @@ export default {
   },
   mounted() {
     if (this.viewer === null) this.initViewer()
+    this.$root.$on('clearViewer', () => {
+      this.clearViewer()
+    })
   },
   methods: {
     ShowPictures() {
-      this.images = []
-      this.viewer.world.resetItems()
-      this.viewer.tileSources = []
-
+      this.clearViewer()
       for (let index = 0; index < this.imageUrls.length; ++index) {
         const item = this.imageUrls[index]
         this.images.push({
@@ -62,6 +62,12 @@ export default {
         preserveViewport: true,
         tileSources: this.files,
       })
+    },
+    clearViewer() {
+      this.images = []
+      this.viewer.world.resetItems()
+      this.viewer.tileSources = []
+      this.viewer.open(this.images)
     },
   },
 }

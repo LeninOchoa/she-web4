@@ -145,6 +145,7 @@ export default {
     },
     Search(param) {
       param.treeId = this.select.BaumId
+      this.$root.$emit('clearViewer')
       this.setSearchParameter(param)
       this.activeTab = 1
     },

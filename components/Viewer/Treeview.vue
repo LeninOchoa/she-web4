@@ -74,7 +74,6 @@ export default {
             item.files = res.files
             item.imageUrls = res.images
             this.loadInViewer(item.imageUrls)
-            console.log('fetchUsers-item-IF2', item)
           }
         }
       })

@@ -88,7 +88,6 @@ export async function loadChildren(parameter, token) {
       for (const index in rest) {
         if (rest[index].Files !== null) {
           files = [...new Set([...files, ...rest[index].Files])]
-          console.log('loadChildren', files)
           continue
         }
         const temp = {
