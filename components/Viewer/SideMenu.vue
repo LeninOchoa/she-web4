@@ -69,9 +69,8 @@ export default {
     ...mapActions({
       getTreeData: 'viewer/getTreeData',
       getTreeFields: 'viewer/getTreeFields',
-      search: 'viewer/searchNodes',
     }),
-    ...mapMutations({ tree: 'viewer/setTree' }),
+    ...mapMutations({ setSearchParameter: 'viewer/setSearchParameter' }),
     setBorderWidth() {
       const i = this.$refs.drawer.$el.querySelector(
         '.v-navigation-drawer__border'
@@ -144,16 +143,10 @@ export default {
         await this.getTreeFields(this.select.BaumId)
       }
     },
-    async Search(param) {
+    Search(param) {
       param.treeId = this.select.BaumId
-
-      await this.search(param).then((res) => {
-        if (res.length > 0) this.activeTab = 1
-        this.tree([])
-        setTimeout(() => {
-          this.tree(res)
-        }, 500)
-      })
+      this.setSearchParameter(param)
+      this.activeTab = 1
     },
   },
 }

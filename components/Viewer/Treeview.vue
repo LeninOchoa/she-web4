@@ -20,6 +20,7 @@
 
 <script>
 import { mapActions, mapMutations } from 'vuex'
+import { searchRootNodes } from '@/modules/viewer/ViewerService'
 export default {
   data: () => ({
     files: {
@@ -31,14 +32,17 @@ export default {
     },
     active: [],
     open: [],
+    items: [],
   }),
   computed: {
-    items() {
-      return this.$store.state.viewer.searchedTree
+    searchParamter() {
+      return this.$store.state.viewer.searchParameter
     },
-    selected() {
-      console.log('selected')
-      return true
+  },
+  watch: {
+    searchParamter(newValue, oldValue) {
+      console.log('watch-searchParamter', newValue)
+      this.rootNodes(newValue)
     },
   },
   methods: {
@@ -76,8 +80,15 @@ export default {
 
       this.loadInViewer(item)
     },
-    updateActive() {
-      console.log('updateActive')
+    async rootNodes(param) {
+      const token = this.$store.state.auth.token
+      await searchRootNodes(param, token).then((res) => {
+        if (res.length > 0) this.activeTab = 1
+        this.items = []
+        setTimeout(() => {
+          this.items = res
+        }, 500)
+      })
     },
   },
 }
