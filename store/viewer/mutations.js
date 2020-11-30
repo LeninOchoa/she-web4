@@ -1,4 +1,5 @@
 export default {
+  // Trees from Sys_Baum
   setTrees(state, trees) {
     state.trees = trees
   },
@@ -7,10 +8,10 @@ export default {
       treeId: payload.tree,
       fields: payload.data,
     }
-    state.treeFields.push(fieldObject)
+    state.searchFields.push(fieldObject)
   },
   setCurrentFields(state, payload) {
-    state.currentFields = payload
+    state.selectedSearchFields = payload
   },
   setSearchParameter(state, payload) {
     state.searchParameter = payload

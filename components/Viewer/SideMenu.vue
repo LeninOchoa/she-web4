@@ -137,7 +137,7 @@ export default {
       }
     },
     async SelectTree() {
-      const fields = this.$store.state.viewer.treeFields.find(
+      const fields = this.$store.state.viewer.searchFields.find(
         (f) => f.treeId === this.select.BaumId
       )
       if (fields === undefined) {

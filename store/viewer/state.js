@@ -1,7 +1,7 @@
 export default () => ({
   trees: [],
-  treeFields: [],
-  currentFields: [],
+  searchFields: [],
+  selectedSearchFields: [],
   searchParameter: [],
   images: [],
   tree: [],

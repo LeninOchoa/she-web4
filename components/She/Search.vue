@@ -69,7 +69,9 @@ export default {
   name: 'Search',
   computed: {
     fields() {
-      return JSON.parse(JSON.stringify(this.$store.state.viewer.currentFields))
+      return JSON.parse(
+        JSON.stringify(this.$store.state.viewer.selectedSearchFields)
+      )
     },
   },
   methods: {
