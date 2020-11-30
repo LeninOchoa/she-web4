@@ -10,10 +10,8 @@
     open-on-click
     transition
   >
-    <template v-slot:prepend="{ item }">
-      <v-icon>
-        {{ files[item.ico] }}
-      </v-icon>
+    <template slot="label" slot-scope="{ item }">
+      <div @click="onClick(item)">{{ item.name }}</div>
     </template>
   </v-treeview>
 </template>
@@ -88,6 +86,9 @@ export default {
           this.items = res
         }, 500)
       })
+    },
+    onClick(item) {
+      console.log('openDialog', item)
     },
   },
 }

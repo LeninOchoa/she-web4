@@ -1,11 +1,7 @@
 <template>
   <div>
     <!--The SideMenu Component go here-->
-    <SideMenu
-      :drawer="drawer"
-      :api-key="api_key"
-      @selectsource="setResource"
-    ></SideMenu>
+    <SideMenu :drawer="drawer"></SideMenu>
 
     <v-toolbar color="primary" class="elevation-2" flat>
       <v-app-bar-nav-icon
@@ -16,64 +12,83 @@
     </v-toolbar>
 
     <v-container fluid>
-      <!--The MainContent Component go here-->
-      <MainContent :articles="articles"></MainContent>
+      <div
+        id="viewer-image"
+        ref="image"
+        style="width: 100%; height: 800px; position: relative"
+      />
     </v-container>
   </div>
 </template>
 
 <script>
-import axios from 'axios' // importing the axios a HTTP library to connects the app with the API
 import SideMenu from '@/components/Viewer/SideMenu.vue' // import the SideMenu component
-import MainContent from '@/components/Viewer/MainContent.vue' // import the MainContent component
-
+import OpenSeadragon from 'openseadragon'
+window.OpenSeadragon = OpenSeadragon
 export default {
   components: {
     SideMenu,
-    MainContent,
   },
 
   data() {
     return {
       drawer: true, // true to show/hide the side navigation drawer
-      api_key: '3630960b6fc6412aba5ab2ddd4d786ec',
-      articles: [],
-      errors: [],
+      viewer: null,
+      contentBuffer: [],
+      ima: null,
+      images: [],
+      imageUrls: {},
     }
   },
-
-  created() {
-    axios
-      .get(
-        'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=' +
-          this.api_key
-      )
-      .then((response) => {
-        this.articles = response.data.articles
-      })
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.log(e)
-      })
+  computed: {
+    storeImages() {
+      return this.$store.state.viewer.images
+    },
   },
-
+  watch: {
+    storeImages(newCount, oldCount) {
+      this.imageUrls = newCount
+      this.ShowPictures()
+    },
+  },
+  mounted() {
+    if (this.viewer === null) this.initViewer()
+    this.$root.$on('clearViewer', () => {
+      this.clearViewer()
+    })
+  },
   methods: {
-    setResource(source) {
-      axios
-        .get(
-          'https://newsapi.org/v2/top-headlines?sources=' +
-            source +
-            '&apiKey=' +
-            this.api_key
-        )
-        .then((response) => {
-          // this.articles = response.data.articles
-          this.articles = response.data.articles
+    ShowPictures() {
+      this.clearViewer()
+      for (let index = 0; index < this.imageUrls.length; ++index) {
+        const item = this.imageUrls[index]
+        this.images.push({
+          type: 'image',
+          url: item,
         })
-        .catch((e) => {
-          // eslint-disable-next-line no-console
-          console.log(e)
-        })
+      }
+      this.viewer.open(this.images)
+    },
+    initViewer() {
+      this.viewer = OpenSeadragon({
+        id: 'viewer-image',
+        animationTime: 0.4,
+        prefixUrl: '/assets/images/',
+        showNavigator: true,
+        sequenceMode: true,
+        showReferenceStrip: true,
+        referenceStripScroll: 'vertical',
+        preserveViewport: true,
+        homeButton: 'home',
+        fullPageButton: 'full-page',
+        tileSources: this.files,
+      })
+    },
+    clearViewer() {
+      this.images = []
+      this.viewer.world.resetItems()
+      this.viewer.tileSources = []
+      this.viewer.open(this.images)
     },
   },
 }
