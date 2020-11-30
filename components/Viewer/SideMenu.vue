@@ -28,11 +28,11 @@
     </v-toolbar>
     <v-tabs v-model="activeTab" grow>
       <v-tab> Suche </v-tab>
-      <v-tab-item>
+      <v-tab-item :eager="true">
         <Search @search="Search"></Search>
       </v-tab-item>
       <v-tab> Baum </v-tab>
-      <v-tab-item>
+      <v-tab-item :eager="true">
         <Treeview></Treeview>
       </v-tab-item>
     </v-tabs>
