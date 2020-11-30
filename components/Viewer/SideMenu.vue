@@ -120,7 +120,7 @@ export default {
       )
     },
     async GetTrees() {
-      if (this.$store.state.viewer.treeData.length === 0) {
+      if (this.$store.state.viewer.trees.length === 0) {
         await this.trees().then((res) => {
           this.items = res
           if (res.length === 1) {
@@ -129,8 +129,8 @@ export default {
           }
         })
       } else {
-        this.items = this.$store.state.viewer.treeData
-        if (this.$store.state.viewer.treeData.length === 1) {
+        this.items = this.$store.state.viewer.trees
+        if (this.$store.state.viewer.trees.length === 1) {
           this.select = this.items[0]
           await this.SelectTree()
         }

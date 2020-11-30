@@ -1,6 +1,6 @@
 export default {
   setTrees(state, trees) {
-    state.treeData = trees
+    state.trees = trees
   },
   setSearchfields(state, payload) {
     const fieldObject = {

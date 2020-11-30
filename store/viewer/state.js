@@ -1,5 +1,5 @@
 export default () => ({
-  treeData: [],
+  trees: [],
   treeFields: [],
   currentFields: [],
   searchParameter: [],
