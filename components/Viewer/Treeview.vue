@@ -34,7 +34,7 @@ export default {
   }),
   computed: {
     items() {
-      return this.$store.state.viewer.tree
+      return this.$store.state.viewer.searchedTree
     },
     selected() {
       console.log('selected')

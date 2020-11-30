@@ -4,5 +4,5 @@ export default () => ({
   selectedSearchFields: [],
   searchParameter: [],
   images: [],
-  tree: [],
+  searchedTree: [],
 })

@@ -20,10 +20,10 @@ export default {
     state.images = payload
   },
   setTree(state, payload) {
-    state.tree = payload
+    state.searchedTree = payload
   },
   addChildren(state, payload) {
-    const tree = state.tree
+    const tree = state.searchedTree
 
     function makeUpdate(a, u, t) {
       return (
@@ -39,10 +39,10 @@ export default {
     }
     makeUpdate(tree, payload.children, payload.parent.id)
 
-    state.tree = tree
+    state.searchedTree = tree
   },
   AddFilesToNode(state, payload) {
-    const tree = state.tree
+    const tree = state.searchedTree
 
     function makeUpdate(a, u, t) {
       return (
@@ -58,11 +58,11 @@ export default {
     }
     makeUpdate(tree, payload.files, payload.node.id)
 
-    state.tree = tree
+    state.searchedTree = tree
   },
 
   AddImageUrlsToNode(state, payload) {
-    const tree = state.tree
+    const tree = state.searchedTree
 
     function makeUpdate(a, u, t) {
       return (
@@ -78,6 +78,6 @@ export default {
     }
     makeUpdate(tree, payload.imageUrls, payload.node.id)
 
-    state.tree = tree
+    state.searchedTree = tree
   },
 }
