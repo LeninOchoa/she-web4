@@ -11,7 +11,9 @@
     transition
   >
     <template slot="label" slot-scope="{ item }">
-      <div @click="onClick(item)">{{ item.name }}</div>
+      <div @click="onClick(item)">
+        <v-icon class="mr-2"> {{ files[item.ico] }} </v-icon>{{ item.name }}
+      </div>
     </template>
   </v-treeview>
 </template>
