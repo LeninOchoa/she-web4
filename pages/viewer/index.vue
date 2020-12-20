@@ -11,12 +11,16 @@
       <v-toolbar-title class="white--text">News App</v-toolbar-title>
     </v-toolbar>
 
-    <v-container fluid>
-      <div
-        id="viewer-image"
-        ref="image"
-        style="width: 100%; height: 800px; position: relative"
-      />
+    <v-container id="container" fluid>
+      <div id="left_panel">left content!</div>
+      <div id="right_panel">
+        <div id="drag"></div>
+        <div
+          id="viewer-image"
+          ref="image"
+          style="width: 100%; height: 800px; position: relative"
+        />
+      </div>
     </v-container>
   </div>
 </template>
@@ -56,8 +60,43 @@ export default {
     this.$root.$on('clearViewer', () => {
       this.clearViewer()
     })
+    this.setBorderWidth()
   },
   methods: {
+    setBorderWidth() {
+      let isResizing = false
+      let lastDownX = 0
+      ;(function () {
+        const container = document.getElementById('container')
+        const left = document.getElementById('left_panel')
+        const right = document.getElementById('right_panel')
+        const handle = document.getElementById('drag')
+
+        handle.onmousedown = function (e) {
+          isResizing = true
+          // eslint-disable-next-line no-unused-vars
+          lastDownX = e.clientX
+        }
+
+        document.onmousemove = function (e) {
+          // we don't want to do anything if we aren't resizing.
+          if (!isResizing) {
+            return
+          }
+
+          const offsetRight =
+            container.clientWidth - (e.clientX - container.offsetLeft)
+
+          left.style.right = offsetRight + 'px'
+          right.style.width = offsetRight + 'px'
+        }
+
+        document.onmouseup = function (e) {
+          // stop resizing
+          isResizing = false
+        }
+      })()
+    },
     ShowPictures() {
       this.clearViewer()
       for (let index = 0; index < this.imageUrls.length; ++index) {
@@ -93,3 +132,35 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+#left_panel {
+  position: absolute;
+  left: 0;
+  top: 70px;
+  bottom: 0;
+  right: 20%;
+  background: white;
+}
+
+#right_panel {
+  position: absolute;
+  right: 0;
+  top: 70px;
+  bottom: 0;
+  width: 80%;
+  color: #fff;
+  background: white;
+}
+
+#drag {
+  position: absolute;
+  left: -4px;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 2px;
+  cursor: w-resize;
+  background: blue;
+}
+</style>
