@@ -11,16 +11,43 @@
       <v-toolbar-title class="white--text">News App</v-toolbar-title>
     </v-toolbar>
 
-    <v-container id="container" fluid>
-      <div id="left_panel">left content!</div>
-      <div id="right_panel">
-        <div id="drag"></div>
+    <v-container fluid>
+      <v-row wrap no-gutters>
         <div
           id="viewer-image"
           ref="image"
-          style="width: 100%; height: 800px; position: relative"
+          style="width: 100%; height: 65vh; position: relative"
         />
-      </div>
+      </v-row>
+      <v-row>
+        <div class="parent">
+          <v-card v-for="card in cards" :key="card.title" class="ma-5">
+            <v-img
+              :src="card.src"
+              max-height="150"
+              max-width="150"
+              min-height="150"
+              min-width="150"
+            >
+            </v-img>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+
+              <v-btn icon>
+                <v-icon>mdi-heart</v-icon>
+              </v-btn>
+
+              <v-btn icon>
+                <v-icon>mdi-bookmark</v-icon>
+              </v-btn>
+
+              <v-btn icon>
+                <v-icon>mdi-share-variant</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </div>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -42,6 +69,58 @@ export default {
       ima: null,
       images: [],
       imageUrls: {},
+      cards: [
+        {
+          title: 'Pre-fab homes',
+          src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
+          flex: 4,
+        },
+        {
+          title: 'Favorite road trips',
+          src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
+          flex: 4,
+        },
+        {
+          title: 'Best airlines',
+          src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
+          flex: 4,
+        },
+        {
+          title: 'Best airlines',
+          src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
+          flex: 4,
+        },
+        {
+          title: 'Favorite road trips',
+          src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
+          flex: 4,
+        },
+        {
+          title: 'Pre-fab homes',
+          src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
+          flex: 4,
+        },
+        {
+          title: 'Favorite road trips',
+          src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
+          flex: 4,
+        },
+        {
+          title: 'Best airlines',
+          src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
+          flex: 4,
+        },
+        {
+          title: 'Best airlines',
+          src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
+          flex: 4,
+        },
+        {
+          title: 'Favorite road trips',
+          src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
+          flex: 4,
+        },
+      ],
     }
   },
   computed: {
@@ -60,43 +139,8 @@ export default {
     this.$root.$on('clearViewer', () => {
       this.clearViewer()
     })
-    this.setBorderWidth()
   },
   methods: {
-    setBorderWidth() {
-      let isResizing = false
-      let lastDownX = 0
-      ;(function () {
-        const container = document.getElementById('container')
-        const left = document.getElementById('left_panel')
-        const right = document.getElementById('right_panel')
-        const handle = document.getElementById('drag')
-
-        handle.onmousedown = function (e) {
-          isResizing = true
-          // eslint-disable-next-line no-unused-vars
-          lastDownX = e.clientX
-        }
-
-        document.onmousemove = function (e) {
-          // we don't want to do anything if we aren't resizing.
-          if (!isResizing) {
-            return
-          }
-
-          const offsetRight =
-            container.clientWidth - (e.clientX - container.offsetLeft)
-
-          left.style.right = offsetRight + 'px'
-          right.style.width = offsetRight + 'px'
-        }
-
-        document.onmouseup = function (e) {
-          // stop resizing
-          isResizing = false
-        }
-      })()
-    },
     ShowPictures() {
       this.clearViewer()
       for (let index = 0; index < this.imageUrls.length; ++index) {
@@ -134,33 +178,13 @@ export default {
 </script>
 
 <style scoped>
-#left_panel {
-  position: absolute;
-  left: 0;
-  top: 70px;
-  bottom: 0;
-  right: 20%;
-  background: white;
-}
-
-#right_panel {
-  position: absolute;
-  right: 0;
-  top: 70px;
-  bottom: 0;
-  width: 80%;
-  color: #fff;
-  background: white;
-}
-
-#drag {
-  position: absolute;
-  left: -4px;
-  top: 0;
-  bottom: 0;
+.parent {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
   height: 100%;
-  width: 2px;
-  cursor: w-resize;
-  background: blue;
+  background-color: white;
+  overflow-x: auto;
 }
 </style>
