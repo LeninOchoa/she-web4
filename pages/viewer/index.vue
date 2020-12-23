@@ -45,8 +45,9 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn icon>
-                  <v-icon>mdi-checkbox-blank-outline</v-icon>
+                <v-btn icon @click="checkMark(card)">
+                  <v-icon v-if="card.marked">mdi-checkbox-marked</v-icon>
+                  <v-icon v-else>mdi-checkbox-blank-outline</v-icon>
                 </v-btn>
 
                 <v-btn icon>
@@ -107,6 +108,7 @@ export default {
         imgs.push({
           index,
           src: item,
+          marked: false,
         })
       }
       if (imgs.length > 0) {
@@ -142,7 +144,9 @@ export default {
         url: param.src,
       })
       this.viewer.open(this.images)
-      // alert(param.src)
+    },
+    checkMark(param) {
+      param.marked = !param.marked
     },
   },
 }
