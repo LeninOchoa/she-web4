@@ -8,7 +8,30 @@
         class="white--text"
         @click="drawer = !drawer"
       ></v-app-bar-nav-icon>
-      <v-toolbar-title class="white--text">News App</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn id="zoom-out" icon dark>
+        <v-icon>mdi-magnify-minus-outline</v-icon>
+      </v-btn>
+
+      <v-btn id="zoom-in" icon dark>
+        <v-icon>mdi-magnify-plus-outline</v-icon>
+      </v-btn>
+
+      <v-btn id="home" icon dark>
+        <v-icon>mdi-home-outline</v-icon>
+      </v-btn>
+
+      <v-btn id="full-page" icon dark>
+        <v-icon>mdi-fullscreen</v-icon>
+      </v-btn>
+
+      <v-btn id="rotate-left" icon dark>
+        <v-icon>mdi-rotate-left</v-icon>
+      </v-btn>
+
+      <v-btn id="rotate-right" icon dark>
+        <v-icon>mdi-rotate-right</v-icon>
+      </v-btn>
     </v-toolbar>
 
     <v-container fluid>
@@ -125,10 +148,19 @@ export default {
         sequenceMode: true,
         // showReferenceStrip: true,
         // referenceStripScroll: 'vertical',
+        showRotationControl: true,
         preserveViewport: true,
+        zoomInButton: 'zoom-in',
+        zoomOutButton: 'zoom-out',
         homeButton: 'home',
         fullPageButton: 'full-page',
+        rotateLeftButton: 'rotate-left',
+        rotateRightButton: 'rotate-right',
         tileSources: this.files,
+        // Enable touch rotation on tactile devices
+        gestureSettingsTouch: {
+          pinchRotate: true,
+        },
       })
     },
     clearViewer() {
