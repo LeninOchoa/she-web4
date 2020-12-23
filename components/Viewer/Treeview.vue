@@ -1,5 +1,6 @@
 <template>
   <v-treeview
+    ref="tree"
     :active.sync="active"
     :items="items"
     :load-children="fetchUsers"
@@ -13,6 +14,28 @@
     <template slot="label" slot-scope="{ item }">
       <div @click="onClick(item)">
         <v-icon class="mr-2"> {{ files[item.ico] }} </v-icon>{{ item.name }}
+        <v-menu bottom left transition="slide-y-transition">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon v-bind="attrs" v-on="on">
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item-group color="primary">
+              <v-list-item v-for="(it, i) in menus" :key="i">
+                <v-list-item-icon>
+                  <v-icon>mdi-arrow-expand-all</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title @click="onClickMenu(item)">{{
+                    it.title
+                  }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-menu>
       </div>
     </template>
   </v-treeview>
@@ -30,9 +53,11 @@ export default {
       bel: 'mdi-file-multiple',
       rest: 'mdi-folder',
     },
+    expand: false,
     active: [],
     open: [],
     items: [],
+    menus: [{ title: 'Ein/Aus -klappen' }],
   }),
   computed: {
     searchParamter() {
@@ -65,6 +90,16 @@ export default {
       await loadChildren(param, token).then((res) => {
         if (res.nodes.length !== 0) {
           item.children = res.nodes
+
+          if (this.expand) {
+            for (const index in res.nodes) {
+              const node = res.nodes[index]
+              this.fetchUsers(node)
+              if (this.open.includes(item.id) === false) {
+                this.open = [...this.open, item.id]
+              }
+            }
+          }
         } else {
           item.children = []
         }
@@ -73,12 +108,13 @@ export default {
           if (item.files.length === 0) {
             item.files = res.files
             item.imageUrls = res.images
-            this.loadInViewer(item.imageUrls)
+            if (this.expand === false) {
+              this.loadInViewer(item.imageUrls)
+            }
           }
         }
       })
     },
-
     async rootNodes(param) {
       const token = this.$store.state.auth.token
       await searchRootNodes(param, token).then((res) => {
@@ -90,7 +126,17 @@ export default {
       })
     },
     onClick(item) {
-      console.log('openDialog', item)
+      this.expand = false
+      if (item.imageUrls.length > 0) this.loadInViewer(item.imageUrls)
+    },
+    onClickMenu(item) {
+      if (this.open.includes(item.id) === false) {
+        this.open = [...this.open, item.id]
+        this.expand = true
+      } else {
+        this.open = this.open.filter((nodeId) => nodeId !== item.id)
+        this.expand = false
+      }
     },
   },
 }

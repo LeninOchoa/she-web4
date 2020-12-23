@@ -164,6 +164,7 @@ export default {
       })
     },
     clearViewer() {
+      this.cards = []
       this.images = []
       this.viewer.world.resetItems()
       this.viewer.tileSources = []
