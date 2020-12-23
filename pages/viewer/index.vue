@@ -21,31 +21,40 @@
       </v-row>
       <v-row>
         <div class="parent">
-          <v-card v-for="card in cards" :key="card.title" class="ma-5">
-            <v-img
-              :src="card.src"
-              max-height="150"
-              max-width="150"
-              min-height="150"
-              min-width="150"
+          <v-hover
+            v-for="card in cards"
+            v-slot="{ hover }"
+            :key="card.index"
+            class="hoverCursor"
+            open-delay="50"
+          >
+            <v-card
+              :elevation="hover ? 16 : 2"
+              :class="{ 'on-hover': hover }"
+              class="ma-5"
             >
-            </v-img>
-            <v-card-actions>
-              <v-spacer></v-spacer>
+              <v-img
+                :src="card.src"
+                max-height="150"
+                max-width="150"
+                min-height="150"
+                min-width="150"
+                @click="activateCard(card)"
+              >
+              </v-img>
+              <v-card-actions>
+                <v-spacer></v-spacer>
 
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
+                <v-btn icon>
+                  <v-icon>mdi-checkbox-blank-outline</v-icon>
+                </v-btn>
 
-              <v-btn icon>
-                <v-icon>mdi-bookmark</v-icon>
-              </v-btn>
-
-              <v-btn icon>
-                <v-icon>mdi-share-variant</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+                <v-btn icon>
+                  <v-icon>mdi-printer</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-hover>
         </div>
       </v-row>
     </v-container>
@@ -69,58 +78,7 @@ export default {
       ima: null,
       images: [],
       imageUrls: {},
-      cards: [
-        {
-          title: 'Pre-fab homes',
-          src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-          flex: 4,
-        },
-        {
-          title: 'Favorite road trips',
-          src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
-          flex: 4,
-        },
-        {
-          title: 'Best airlines',
-          src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-          flex: 4,
-        },
-        {
-          title: 'Best airlines',
-          src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-          flex: 4,
-        },
-        {
-          title: 'Favorite road trips',
-          src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
-          flex: 4,
-        },
-        {
-          title: 'Pre-fab homes',
-          src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-          flex: 4,
-        },
-        {
-          title: 'Favorite road trips',
-          src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
-          flex: 4,
-        },
-        {
-          title: 'Best airlines',
-          src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-          flex: 4,
-        },
-        {
-          title: 'Best airlines',
-          src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-          flex: 4,
-        },
-        {
-          title: 'Favorite road trips',
-          src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
-          flex: 4,
-        },
-      ],
+      cards: [],
     }
   },
   computed: {
@@ -142,25 +100,29 @@ export default {
   },
   methods: {
     ShowPictures() {
-      this.clearViewer()
+      // this.clearViewer()
+      const imgs = []
       for (let index = 0; index < this.imageUrls.length; ++index) {
         const item = this.imageUrls[index]
-        this.images.push({
-          type: 'image',
-          url: item,
+        imgs.push({
+          index,
+          src: item,
         })
       }
-      this.viewer.open(this.images)
+      if (imgs.length > 0) {
+        this.activateCard(imgs[0])
+      }
+      this.cards = imgs
     },
     initViewer() {
       this.viewer = OpenSeadragon({
         id: 'viewer-image',
         animationTime: 0.4,
         prefixUrl: '/assets/images/',
-        showNavigator: true,
+        // showNavigator: true,
         sequenceMode: true,
-        showReferenceStrip: true,
-        referenceStripScroll: 'vertical',
+        // showReferenceStrip: true,
+        // referenceStripScroll: 'vertical',
         preserveViewport: true,
         homeButton: 'home',
         fullPageButton: 'full-page',
@@ -172,6 +134,15 @@ export default {
       this.viewer.world.resetItems()
       this.viewer.tileSources = []
       this.viewer.open(this.images)
+    },
+    activateCard(param) {
+      this.clearViewer()
+      this.images.push({
+        type: 'image',
+        url: param.src,
+      })
+      this.viewer.open(this.images)
+      // alert(param.src)
     },
   },
 }
@@ -186,5 +157,8 @@ export default {
   height: 100%;
   background-color: white;
   overflow-x: auto;
+}
+.hoverCursor:hover {
+  cursor: pointer;
 }
 </style>
