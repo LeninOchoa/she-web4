@@ -2,6 +2,7 @@
   <div>
     <!--The SideMenu Component go here-->
     <SideMenu :drawer="drawer"></SideMenu>
+    <SideMenuRight :drawer="drawer"></SideMenuRight>
 
     <v-toolbar color="primary" class="elevation-2" flat>
       <v-app-bar-nav-icon
@@ -88,9 +89,11 @@
 <script>
 import SideMenu from '@/components/Viewer/SideMenu.vue' // import the SideMenu component
 import OpenSeadragon from 'openseadragon'
+import SideMenuRight from '~/components/Viewer/SideMenuRight'
 window.OpenSeadragon = OpenSeadragon
 export default {
   components: {
+    SideMenuRight,
     SideMenu,
   },
 
