@@ -43,7 +43,11 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import { searchRootNodes, loadChildren } from '@/modules/viewer/ViewerService'
+import {
+  searchRootNodes,
+  loadChildren,
+  GetInformation,
+} from '@/modules/viewer/ViewerService'
 export default {
   data: () => ({
     files: {
@@ -81,6 +85,7 @@ export default {
           PKID: item.data.PKID,
           sPKID: item.data.sPKID,
           BelegTypID: item.data.BelegTypID,
+          parent: Object.assign({}, item),
         },
         Sfs: JSON.parse(
           JSON.stringify(this.$store.state.viewer.searchParameter.data)
@@ -125,9 +130,37 @@ export default {
         }, 500)
       })
     },
-    onClick(item) {
+    async onClick(item) {
       this.expand = false
       if (item.imageUrls.length > 0) this.loadInViewer(item.imageUrls)
+
+      if (item.Information !== null) return
+
+      const EbeneIds = []
+      const Pkids = []
+
+      let node = item
+      while (node != null) {
+        if (EbeneIds.includes(node.data.EbeneID) === false) {
+          EbeneIds.push(node.data.EbeneID)
+        }
+
+        const arr = []
+        for (const index in node.data.PKID) {
+          if (arr.includes(node.data.PKID[index]) === false) {
+            arr.push(node.data.PKID[index])
+          }
+        }
+        Pkids.push(arr)
+        node = node.parent
+      }
+
+      item.Information = await GetInformation(
+        { EbeneIds, Pkids },
+        this.$store.state.auth.token
+      )
+
+      console.log('onClick', item.Information)
     },
     onClickMenu(item) {
       if (this.open.includes(item.id) === false) {

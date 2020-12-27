@@ -19,6 +19,7 @@ export async function searchRootNodes(params, token) {
     })
     .then((result) => {
       const nodes = []
+
       for (const data in result.data) {
         const temp = {
           ico: 'pat',
@@ -28,14 +29,9 @@ export async function searchRootNodes(params, token) {
           id: result.data[data].PKID[0],
           files: [],
           imageUrls: [],
+          parent: null,
+          Information: null,
         }
-        /*
-        vuexContext
-          .dispatch('LoadLowerLayer', result.data[data].EbeneID)
-          .then((lower) => {
-            temp.layer = lower
-          })
-        */
         nodes.push(temp)
       }
 
@@ -51,7 +47,6 @@ export async function loadChildren(parameter, token) {
 
   const apiUrl =
     process.env.baseUrl + '/api/DocumentViewer/LoadChildren/' + parameter.treeId
-
   const items = {
     ParentNode: parameter.ParentNode,
     Sfs: parameter.Sfs,
@@ -98,6 +93,8 @@ export async function loadChildren(parameter, token) {
           id: rest[index].PKID[0],
           files: [],
           imageUrls: [],
+          parent: parameter.ParentNode.parent,
+          Information: null,
         }
         nodes.push(temp)
       }
@@ -123,6 +120,7 @@ export async function loadChildren(parameter, token) {
       return { nodes, files, images }
     })
     .catch((error) => {
+      console.log('loadChildren', error)
       return Promise.reject(error.response)
     })
 }
@@ -141,6 +139,32 @@ export async function getImageBinary(parameter, token) {
       responseType: 'blob',
       method: 'get',
       url: apiUrl,
+      headers: {
+        authorization: `Bearer  ${token}`,
+        'If-Modified-Since': 'Mon, 26 Jul 1997 05:00:00 GMT',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        Expires: 'Sat, 01 Jan 2000 00:00:00 GMT',
+      },
+    })
+    .then((result) => {
+      return result.data
+    })
+    .catch((error) => {
+      return Promise.reject(error.response)
+    })
+}
+
+export async function GetInformation(parameter, token) {
+  if (token === null) return
+  // console.log('GetInformation', parameter)
+  const apiUrl = process.env.baseUrl + '/api/DocumentViewer/GetInformation/'
+
+  return await window.$nuxt
+    .$axios({
+      method: 'post',
+      url: apiUrl,
+      data: parameter,
       headers: {
         authorization: `Bearer  ${token}`,
         'If-Modified-Since': 'Mon, 26 Jul 1997 05:00:00 GMT',
