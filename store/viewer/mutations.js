@@ -19,4 +19,7 @@ export default {
   loadInViewer(state, payload) {
     state.images = payload
   },
+  loadEbeneInfos(state, payload) {
+    state.ebeneInfos = payload
+  },
 }

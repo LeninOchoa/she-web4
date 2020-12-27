@@ -76,6 +76,7 @@ export default {
   methods: {
     ...mapMutations({
       loadInViewer: 'viewer/loadInViewer',
+      loadEbeneInfos: 'viewer/loadEbeneInfos',
     }),
     async fetchUsers(item) {
       const param = {
@@ -121,6 +122,8 @@ export default {
       })
     },
     async rootNodes(param) {
+      this.loadEbeneInfos([])
+      this.loadInViewer([])
       const token = this.$store.state.auth.token
       await searchRootNodes(param, token).then((res) => {
         if (res.length > 0) this.activeTab = 1
@@ -134,7 +137,10 @@ export default {
       this.expand = false
       if (item.imageUrls.length > 0) this.loadInViewer(item.imageUrls)
 
-      if (item.Information !== null) return
+      if (item.Information !== null) {
+        this.loadEbeneInfos(item.Information)
+        return
+      }
 
       const EbeneIds = []
       const Pkids = []
@@ -155,12 +161,27 @@ export default {
         node = node.parent
       }
 
-      item.Information = await GetInformation(
+      const rest = await GetInformation(
         { EbeneIds, Pkids },
         this.$store.state.auth.token
       )
+      const infos = []
+      for (const index in rest) {
+        const obj = rest[index]
+        if (obj === null || obj.InfoEbeneSpalten == null) continue
+        for (const index2 in obj.InfoEbeneSpalten) {
+          const info = obj.InfoEbeneSpalten[index2]
+          const temp = {
+            ebene: obj.Bezeichnung,
+            name: info.Name,
+            value: info.ColumnValue,
+          }
+          infos.push(temp)
+        }
+      }
 
-      console.log('onClick', item.Information)
+      item.Information = Object.assign({}, infos)
+      this.loadEbeneInfos(item.Information)
     },
     onClickMenu(item) {
       if (this.open.includes(item.id) === false) {

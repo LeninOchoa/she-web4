@@ -11,29 +11,32 @@
       width="30%"
     >
       <v-row class="fill-height" no-gutters>
-        <v-navigation-drawer mini-variant mini-variant-width="60" permanent>
-          <v-list-item class="px-2 py-2">
-            <v-btn v-if="!mini" icon @click.stop="mini = !mini">
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-btn>
-            <v-btn v-else icon @click.stop="mini = !mini">
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-btn>
-          </v-list-item>
-
-          <v-divider></v-divider>
-
-          <v-list dense nav>
-            <v-list-item v-for="item in items" :key="item.title">
-              <v-btn icon @click="tabsEvent(item)">
-                <v-icon>{{ item.icon }}</v-icon>
+        <v-col md="auto">
+          <v-navigation-drawer mini-variant mini-variant-width="60" permanent>
+            <v-list-item class="px-2 py-2">
+              <v-btn v-if="!mini" icon @click.stop="mini = !mini">
+                <v-icon>mdi-chevron-right</v-icon>
+              </v-btn>
+              <v-btn v-else icon @click.stop="mini = !mini">
+                <v-icon>mdi-chevron-right</v-icon>
               </v-btn>
             </v-list-item>
-          </v-list>
-        </v-navigation-drawer>
 
-        <Infos v-if="info"></Infos>
-        <Archiv v-else></Archiv>
+            <v-divider></v-divider>
+
+            <v-list dense nav>
+              <v-list-item v-for="item in items" :key="item.title">
+                <v-btn icon @click="tabsEvent(item)">
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-btn>
+              </v-list-item>
+            </v-list>
+          </v-navigation-drawer>
+        </v-col>
+        <v-col v-show="!mini" style="max-width: 100%">
+          <Infos v-show="info"></Infos>
+          <Archiv v-show="!info"></Archiv>
+        </v-col>
       </v-row>
     </v-navigation-drawer>
   </v-card>

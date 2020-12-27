@@ -5,4 +5,5 @@ export default () => ({
   searchParameter: [],
   images: [],
   searchedTree: [],
+  ebeneInfos: [],
 })
