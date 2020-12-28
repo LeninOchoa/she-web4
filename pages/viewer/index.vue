@@ -1,13 +1,13 @@
 <template>
   <div>
     <!--The SideMenu Component go here-->
-    <SideMenu :drawerL="drawerL"></SideMenu>
-    <SideMenuRight :drawerR="drawerR"></SideMenuRight>
+    <SideMenu :drawer-l="drawerL"></SideMenu>
+    <SideMenuRight :drawer-r="drawerR"></SideMenuRight>
 
     <v-toolbar color="primary" flat>
       <v-app-bar-nav-icon
         class="white--text"
-        @click="drawer = !drawer"
+        @click="drawerL = !drawerL"
       ></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
       <v-btn id="zoom-out" icon dark>

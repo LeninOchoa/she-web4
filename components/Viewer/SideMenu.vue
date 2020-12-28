@@ -52,6 +52,7 @@ export default {
     },
   },
   data: () => ({
+    drawer: true,
     activeTab: 0,
     select: null,
     navigation: {
