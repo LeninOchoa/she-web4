@@ -11,7 +11,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-
+import { mapMutations } from 'vuex'
 export default {
   layout: 'frau',
   data() {
@@ -41,6 +41,9 @@ export default {
     this.validate()
   },
   methods: {
+    ...mapMutations({
+      setFrauParameter: 'she/setFrauParameter',
+    }),
     ...mapActions({ authenticateUser: 'auth/authenticateUser' }),
     validate() {
       if (this.frau.user === undefined || this.frau.password === undefined) {
@@ -55,6 +58,7 @@ export default {
         password: this.frau.password,
       })
         .then(() => {
+          this.setFrauParameter(this.frau)
           this.$router.push('/viewer')
         })
         .catch(() => {

@@ -71,11 +71,13 @@ export default {
     vuexContext.commit('clearToken')
     Cookies.remove('jwt')
     Cookies.remove('expirationDate')
+    vuexContext.commit('she/setFrauParameter', null, { root: true })
+    vuexContext.rootState.she.frauParameter = null
     if (process.client) {
       localStorage.removeItem('token')
       localStorage.removeItem('tokenExpiration')
       if (token === null) return
-      const logoutUrl = process.env.baseUrl + '/account/logout'
+      const logoutUrl = process.env.baseUrl + '/api/account/logout'
       return await this.$axios({
         method: 'get',
         url: logoutUrl,
