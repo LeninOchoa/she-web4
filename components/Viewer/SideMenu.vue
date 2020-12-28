@@ -11,6 +11,7 @@
         <v-row align="center">
           <v-col align-self="center" class="mt-5">
             <v-select
+              v-if="!isfrau"
               v-model="select"
               :items="items"
               label="Baum"
@@ -20,16 +21,16 @@
               return-object
               single-line
               dark
-              @change="SelectTree"
+              @change="selectTree"
             ></v-select>
           </v-col>
         </v-row>
       </v-container>
     </v-toolbar>
     <v-tabs v-model="activeTab" grow>
-      <v-tab> Suche </v-tab>
-      <v-tab-item :eager="true">
-        <Search @search="Search"></Search>
+      <v-tab v-if="!isfrau">Suche </v-tab>
+      <v-tab-item v-if="!isfrau" :eager="true">
+        <Search @search="search"></Search>
       </v-tab-item>
       <v-tab> Baum </v-tab>
       <v-tab-item :eager="true">
@@ -40,7 +41,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import Search from '@/components/She/Search'
 import Treeview from '@/components/Viewer/Treeview'
 export default {
@@ -61,10 +62,19 @@ export default {
     },
     items: [],
   }),
+  computed: {
+    ...mapState({
+      frau: (state) => state.she.frauParameter,
+    }),
+    ...mapGetters({
+      isfrau: 'she/isFrau',
+    }),
+  },
   mounted() {
     this.setBorderWidth()
     this.setEvents()
-    this.GetTrees()
+    if (this.isfrau === false) this.getTrees()
+    else this.frauSearch()
   },
   methods: {
     ...mapActions({
@@ -119,7 +129,7 @@ export default {
         false
       )
     },
-    async GetTrees() {
+    async getTrees() {
       if (this.$store.state.viewer.trees.length === 0) {
         await this.getTreeData().then((res) => {
           this.items = res
@@ -136,7 +146,7 @@ export default {
         }
       }
     },
-    async SelectTree() {
+    async selectTree() {
       const fields = this.$store.state.viewer.searchFields.find(
         (f) => f.treeId === this.select.BaumId
       )
@@ -144,12 +154,13 @@ export default {
         await this.getTreeFields(this.select.BaumId)
       }
     },
-    Search(param) {
+    search(param) {
       param.treeId = this.select.BaumId
       this.$root.$emit('clearViewer')
       this.setSearchParameter(param)
       this.activeTab = 1
     },
+    frauSearch() {},
   },
 }
 </script>

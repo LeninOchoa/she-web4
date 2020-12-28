@@ -5,4 +5,7 @@ export default {
   getFrauParameter(state) {
     return state.frauParameter
   },
+  isFrau(state) {
+    return state.frauParameter !== null
+  },
 }

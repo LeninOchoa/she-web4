@@ -15,8 +15,8 @@
         class="navigation-drawer"
         @click="onToggle"
       ></v-app-bar-nav-icon>
-      <v-toolbar-title style="cursor: pointer">
-        <v-btn text to="/" nuxt> SHE </v-btn></v-toolbar-title
+      <v-toolbar-title v-if="!isfrau" style="cursor: pointer">
+        <v-btn v-if="!isfrau" text to="/" nuxt> SHE </v-btn></v-toolbar-title
       >
       <v-spacer></v-spacer>
       <v-toolbar-items v-if="isAutheticated" class="navigation-items">
@@ -48,6 +48,7 @@ export default {
   name: 'TheHeader',
   computed: {
     ...mapGetters({
+      isfrau: 'she/isFrau',
       isAutheticated: 'auth/isAutheticated',
       modules: 'auth/modules',
       show: 'she/showDrawer',
