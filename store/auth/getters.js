@@ -7,6 +7,7 @@ export default {
   },
   token(state) {
     let tCopy = state.token
+    if (state.token === null) return null
     if (tCopy[0] === '"') {
       tCopy = tCopy.substring(1, tCopy.length - 1)
     }

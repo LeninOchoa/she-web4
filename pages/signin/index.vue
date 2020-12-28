@@ -4,14 +4,20 @@
       <v-col cols="12" sm="8" lass="justify-center align-center">
         <v-card outlined elevation="2">
           <v-card-title class="mt-1">
-            <v-avatar size="56">
-              <img
-                alt="user"
-                src="~/assets/SHE-CORE-Alpha.png"
-                style="background-color: #4a5f9f"
-              />
-            </v-avatar>
-            <h2 class="font-weight-bold ml-3 mt-5">Anmeldung</h2>
+            <v-row align="center" class="spacer" no-gutters>
+              <v-col cols="4" sm="2" md="1">
+                <v-avatar size="56">
+                  <img
+                    alt="user"
+                    src="~/assets/SHE-CORE-Alpha.png"
+                    style="background-color: #4a5f9f"
+                  />
+                </v-avatar>
+              </v-col>
+              <v-col class="hidden-xs-only" sm="5" md="3">
+                <h2 class="font-weight-bold ml-3 mt-5 pb-4">Anmeldung</h2>
+              </v-col>
+            </v-row>
           </v-card-title>
           <v-card-text>
             <v-form
@@ -78,13 +84,21 @@ export default {
   },
   methods: {
     ...mapActions({ authenticateUser: 'auth/authenticateUser' }),
-    validate() {
+    async validate() {
       if (this.$refs.form.validate() === false) {
         return
       }
-      this.authenticateUser(this.user).then(() => {
-        this.$router.push('/')
-      })
+      await this.authenticateUser(this.user)
+        .then(() => {
+          this.$router.push('/')
+        })
+        .catch(() => {
+          this.$nuxt.error({
+            reload: true,
+            statusCode: 408,
+            message: '408 Login nicht möglich',
+          })
+        })
     },
     reset() {
       this.$refs.form.reset()

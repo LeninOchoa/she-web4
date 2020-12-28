@@ -4,7 +4,7 @@
     <SideMenu :drawer="drawer"></SideMenu>
     <SideMenuRight :drawer="drawer"></SideMenuRight>
 
-    <v-toolbar color="primary" class="elevation-2" flat>
+    <v-toolbar color="primary" flat>
       <v-app-bar-nav-icon
         class="white--text"
         @click="drawer = !drawer"

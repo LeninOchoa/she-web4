@@ -44,7 +44,6 @@ export default {
       const temp = []
       for (const index in list) {
         const item = list[index]
-        console.log('infos', item)
         temp.push(item)
       }
       this.ebenen = temp

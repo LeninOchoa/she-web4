@@ -6,7 +6,7 @@
     clipped
     :width="navigation.width"
   >
-    <v-toolbar color="primary" class="elevation-2" flat>
+    <v-toolbar color="primary" flat>
       <v-container fluid>
         <v-row align="center">
           <v-col align-self="center" class="mt-5">

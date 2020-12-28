@@ -1,8 +1,9 @@
 import Cookies from 'js-cookie'
 
 export default {
-  async authenticateUser(vuexContext, authData) {
+  async authenticateUser(context, authData) {
     const authUrl = process.env.baseUrl + '/token'
+    console.log(authData)
     const body = `grant_type=password&username=${authData.login}&password=${authData.password}&scope=viewer`
     return await this.$axios({
       method: 'post',
@@ -11,7 +12,7 @@ export default {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
       .then((result) => {
-        vuexContext.commit('setToken', result.data.access_token)
+        context.commit('setToken', result.data.access_token)
         localStorage.setItem('token', result.data.access_token)
         localStorage.setItem(
           'tokenExpiration',
@@ -22,10 +23,12 @@ export default {
           'expirationDate',
           new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000
         )
+        return true
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.log(e)
+        return Promise.reject(e)
       })
   },
   setLogoutTimer(vuexContext, duration) {
@@ -64,13 +67,31 @@ export default {
     }
     vuexContext.commit('setToken', token)
   },
-  logout(vuexContext) {
+  async logout(vuexContext) {
+    const token = vuexContext.rootGetters['auth/token']
     vuexContext.commit('clearToken')
     Cookies.remove('jwt')
     Cookies.remove('expirationDate')
     if (process.client) {
       localStorage.removeItem('token')
       localStorage.removeItem('tokenExpiration')
+      if (token === null) return
+      const logoutUrl = process.env.baseUrl + '/account/logout'
+      return await this.$axios({
+        method: 'get',
+        url: logoutUrl,
+        headers: {
+          authorization: `Bearer  ${token}`,
+          'If-Modified-Since': 'Mon, 26 Jul 1997 05:00:00 GMT',
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+          Expires: 'Sat, 01 Jan 2000 00:00:00 GMT',
+        },
+      })
+        .then((result) => {})
+        .catch((error) => {
+          return Promise.reject(error.response)
+        })
     }
   },
 }

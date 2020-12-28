@@ -120,7 +120,6 @@ export async function loadChildren(parameter, token) {
       return { nodes, files, images }
     })
     .catch((error) => {
-      console.log('loadChildren', error)
       return Promise.reject(error.response)
     })
 }

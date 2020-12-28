@@ -1,12 +1,19 @@
 <template>
   <v-app dark>
-    <h1 v-if="error.statusCode === 404">
-      {{ pageNotFound }}
-    </h1>
-    <h1 v-else>
-      {{ otherError }}
-    </h1>
-    <NuxtLink to="/"> Home page </NuxtLink>
+    <div class="center">
+      <h1 v-if="error.statusCode === 404">
+        {{ pageNotFound }}
+      </h1>
+      <h1 v-else>
+        {{ otherError }}
+      </h1>
+      <v-btn v-if="reload" class="" outlined color="indigo" block href="/">
+        Reload
+      </v-btn>
+      <v-btn v-else class="" outlined color="indigo" block to="/">
+        Reload
+      </v-btn>
+    </div>
   </v-app>
 </template>
 
@@ -21,13 +28,18 @@ export default {
   },
   data() {
     return {
-      pageNotFound: '404 Not Found',
-      otherError: 'An error occurred',
+      pageNotFound: '404 nicht gefunden',
+      otherError: 'Es ist ein Fehler aufgetreten',
+      reload: false,
     }
   },
   head() {
-    const title =
-      this.error.statusCode === 404 ? this.pageNotFound : this.otherError
+    if (this.error.reload !== undefined) {
+      this.reload = this.error.reload
+    }
+    this.otherError =
+      this.error.message === undefined ? this.otherError : this.error.message
+    const title = 'SHE-Error'
     return {
       title,
     }
@@ -38,5 +50,13 @@ export default {
 <style scoped>
 h1 {
   font-size: 20px;
+}
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 </style>
