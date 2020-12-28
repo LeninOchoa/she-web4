@@ -3,7 +3,6 @@ import Cookies from 'js-cookie'
 export default {
   async authenticateUser(context, authData) {
     const authUrl = process.env.baseUrl + '/token'
-    console.log(authData)
     const body = `grant_type=password&username=${authData.login}&password=${authData.password}&scope=viewer`
     return await this.$axios({
       method: 'post',

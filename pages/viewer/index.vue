@@ -1,8 +1,8 @@
 <template>
   <div>
     <!--The SideMenu Component go here-->
-    <SideMenu :drawer="drawer"></SideMenu>
-    <SideMenuRight :drawer="drawer"></SideMenuRight>
+    <SideMenu :drawerL="drawerL"></SideMenu>
+    <SideMenuRight :drawerR="drawerR"></SideMenuRight>
 
     <v-toolbar color="primary" flat>
       <v-app-bar-nav-icon
@@ -99,7 +99,8 @@ export default {
 
   data() {
     return {
-      drawer: true, // true to show/hide the side navigation drawer
+      drawerL: true, // true to show/hide the side navigation drawer
+      drawerR: true, // true to show/hide the side navigation drawer
       viewer: null,
       contentBuffer: [],
       ima: null,

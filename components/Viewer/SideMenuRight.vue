@@ -2,7 +2,7 @@
   <v-card>
     <v-navigation-drawer
       ref="drawer"
-      v-model="drawer"
+      v-model="drawerR"
       app
       clipped
       permanent
@@ -45,7 +45,7 @@
 <script>
 export default {
   props: {
-    drawer: {
+    drawerR: {
       type: Boolean,
       default: true,
     },

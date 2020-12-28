@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer
     ref="drawer"
-    v-model="drawer"
+    v-model="drawerL"
     app
     clipped
     :width="navigation.width"
@@ -46,7 +46,7 @@ import Treeview from '@/components/Viewer/Treeview'
 export default {
   components: { Search, Treeview },
   props: {
-    drawer: {
+    drawerL: {
       type: Boolean,
       default: true,
     },
