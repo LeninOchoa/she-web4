@@ -10,20 +10,19 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { mapMutations } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 export default {
   layout: 'frau',
   data() {
     return {
       frau: {
-        user: '',
-        password: '',
-        patientId: '',
-        fallnummer: '',
-        documentId: '',
-        baumsf: '',
-        module: '',
+        user: null,
+        password: null,
+        patientId: null,
+        fallnummer: null,
+        documentId: null,
+        baumsf: null,
+        module: null,
       },
     }
   },

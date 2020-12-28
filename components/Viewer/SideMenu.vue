@@ -131,18 +131,18 @@ export default {
     },
     async getTrees() {
       if (this.$store.state.viewer.trees.length === 0) {
-        await this.getTreeData().then((res) => {
+        await this.getTreeData().then(async (res) => {
           this.items = res
           if (res.length === 1) {
             this.select = this.items[0]
-            this.SelectTree()
+            await this.selectTree()
           }
         })
       } else {
         this.items = this.$store.state.viewer.trees
         if (this.$store.state.viewer.trees.length === 1) {
           this.select = this.items[0]
-          await this.SelectTree()
+          await this.selectTree()
         }
       }
     },
@@ -160,7 +160,28 @@ export default {
       this.setSearchParameter(param)
       this.activeTab = 1
     },
-    frauSearch() {},
+    async frauSearch() {
+      const baumId =
+        this.frau.baumsf === undefined ? process.env.baumsf : this.frau.baumsf
+
+      let rest = await this.getTreeFields(baumId)
+      rest = Object.assign({}, rest)
+      for (const index in rest.data) {
+        if (
+          rest.data[index].AliasIntern === 'Aufenthaltsnummer' &&
+          this.frau.fallnummer !== undefined
+        ) {
+          rest.data[index].SearchValue = this.frau.fallnummer
+        } else if (
+          rest.data[index].AliasIntern === 'Patientennummer' &&
+          this.frau.patientId !== undefined
+        ) {
+          rest.data[index].SearchValue = this.frau.patientId
+        }
+      }
+      rest.treeId = baumId
+      this.setSearchParameter(rest)
+    },
   },
 }
 </script>

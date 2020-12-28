@@ -73,6 +73,7 @@ export default {
 
   env: {
     baseUrl: process.env.BASE_URL || 'http://localhost:9000',
+    baumsf: process.env.TREE_ID || '4',
   },
 
   pageTransition: {

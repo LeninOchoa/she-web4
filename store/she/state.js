@@ -1,4 +1,4 @@
 export default () => ({
   ShowDrawer: false,
-  frauParameter: {},
+  frauParameter: null,
 })

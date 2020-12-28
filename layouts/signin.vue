@@ -14,6 +14,7 @@
 import TheHeader from '@/components/Navigation/TheHeader'
 import TheFooter from '@/components/Navigation/TheFooter'
 export default {
+  name: 'Signin',
   components: { TheFooter, TheHeader },
 }
 </script>
