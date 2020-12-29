@@ -74,7 +74,7 @@
                   <v-icon v-else>mdi-checkbox-blank-outline</v-icon>
                 </v-btn>
 
-                <v-btn icon>
+                <v-btn icon @click="printer(card)">
                   <v-icon>mdi-printer</v-icon>
                 </v-btn>
               </v-card-actions>
@@ -89,7 +89,8 @@
 <script>
 import SideMenu from '@/components/Viewer/SideMenu.vue' // import the SideMenu component
 import OpenSeadragon from 'openseadragon'
-import SideMenuRight from '~/components/Viewer/SideMenuRight'
+import SideMenuRight from '@/components/Viewer/SideMenuRight'
+import { PrintImages } from '@/modules/she/Print'
 window.OpenSeadragon = OpenSeadragon
 export default {
   components: {
@@ -183,6 +184,10 @@ export default {
     },
     checkMark(param) {
       param.marked = !param.marked
+    },
+    printer(param) {
+      console.log('test')
+      PrintImages(param.src)
     },
   },
 }

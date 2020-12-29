@@ -14,7 +14,7 @@
     <template slot="label" slot-scope="{ item }">
       <div @click="onClick(item)">
         <v-icon class="mr-2"> {{ files[item.ico] }} </v-icon>{{ item.name }}
-        <v-menu bottom left transition="slide-y-transition">
+        <v-menu bottom left transition="slide-y-transition" tile>
           <template v-slot:activator="{ on, attrs }">
             <v-btn icon v-bind="attrs" v-on="on">
               <v-icon>mdi-dots-vertical</v-icon>
