@@ -22,4 +22,7 @@ export default {
   loadEbeneInfos(state, payload) {
     state.ebeneInfos = payload
   },
+  setDrawerL(state, payload) {
+    state.drawerL = payload
+  },
 }

@@ -6,4 +6,5 @@ export default () => ({
   images: [],
   searchedTree: [],
   ebeneInfos: [],
+  drawerL: true,
 })

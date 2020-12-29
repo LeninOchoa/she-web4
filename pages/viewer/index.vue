@@ -1,13 +1,13 @@
 <template>
   <div>
     <!--The SideMenu Component go here-->
-    <SideMenu :drawer-l="drawerL"></SideMenu>
+    <SideMenu></SideMenu>
     <SideMenuRight :drawer-r="drawerR"></SideMenuRight>
 
     <v-toolbar color="primary" flat>
       <v-app-bar-nav-icon
         class="white--text"
-        @click="drawerL = !drawerL"
+        @click="drawerClick"
       ></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
       <v-btn id="zoom-out" icon dark>
@@ -91,16 +91,15 @@ import SideMenu from '@/components/Viewer/SideMenu.vue' // import the SideMenu c
 import OpenSeadragon from 'openseadragon'
 import SideMenuRight from '@/components/Viewer/SideMenuRight'
 import { PrintImages } from '@/modules/she/Print'
+import { mapMutations, mapState } from 'vuex'
 window.OpenSeadragon = OpenSeadragon
 export default {
   components: {
     SideMenuRight,
     SideMenu,
   },
-
   data() {
     return {
-      drawerL: true, // true to show/hide the side navigation drawer
       drawerR: true, // true to show/hide the side navigation drawer
       viewer: null,
       contentBuffer: [],
@@ -114,6 +113,9 @@ export default {
     storeImages() {
       return this.$store.state.viewer.images
     },
+    ...mapState({
+      drawerLeft: (state) => state.viewer.drawerL,
+    }),
   },
   watch: {
     storeImages(newCount, oldCount) {
@@ -128,6 +130,7 @@ export default {
     })
   },
   methods: {
+    ...mapMutations({ setDrawerL: 'viewer/setDrawerL' }),
     ShowPictures() {
       // this.clearViewer()
       const imgs = []
@@ -186,8 +189,11 @@ export default {
       param.marked = !param.marked
     },
     printer(param) {
-      console.log('test')
       PrintImages(param.src)
+    },
+    drawerClick() {
+      console.log('drawerClick', this.drawerLeft)
+      this.setDrawerL(!this.drawerLeft)
     },
   },
 }

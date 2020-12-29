@@ -8,6 +8,7 @@
       permanent
       :mini-variant.sync="mini"
       right
+      bottom
       width="30%"
     >
       <v-row class="fill-height" no-gutters>

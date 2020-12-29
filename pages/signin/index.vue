@@ -14,7 +14,7 @@
                   />
                 </v-avatar>
               </v-col>
-              <v-col class="hidden-xs-only" sm="5" md="3">
+              <v-col>
                 <h2 class="font-weight-bold ml-3 mt-5 pb-4">Anmeldung</h2>
               </v-col>
             </v-row>

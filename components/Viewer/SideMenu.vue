@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer
     ref="drawer"
-    v-model="drawerL"
+    v-model="drawerIntern"
     app
     clipped
     :width="navigation.width"
@@ -46,14 +46,7 @@ import Search from '@/components/She/Search'
 import Treeview from '@/components/Viewer/Treeview'
 export default {
   components: { Search, Treeview },
-  props: {
-    drawerL: {
-      type: Boolean,
-      default: true,
-    },
-  },
   data: () => ({
-    drawer: true,
     activeTab: 0,
     select: null,
     navigation: {
@@ -69,6 +62,16 @@ export default {
     ...mapGetters({
       isfrau: 'she/isFrau',
     }),
+    drawerIntern: {
+      // getter
+      get() {
+        return this.$store.state.viewer.drawerL
+      },
+      // setter
+      set(newValue) {
+        this.setDrawerL(newValue)
+      },
+    },
   },
   mounted() {
     this.setBorderWidth()
@@ -81,7 +84,10 @@ export default {
       getTreeData: 'viewer/getTreeData',
       getTreeFields: 'viewer/getTreeFields',
     }),
-    ...mapMutations({ setSearchParameter: 'viewer/setSearchParameter' }),
+    ...mapMutations({
+      setSearchParameter: 'viewer/setSearchParameter',
+      setDrawerL: 'viewer/setDrawerL',
+    }),
     setBorderWidth() {
       const i = this.$refs.drawer.$el.querySelector(
         '.v-navigation-drawer__border'
