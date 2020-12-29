@@ -1,6 +1,7 @@
 <template>
   <v-card>
     <v-navigation-drawer
+      v-if="!$vuetify.breakpoint.xsOnly"
       ref="drawer"
       v-model="drawerR"
       app

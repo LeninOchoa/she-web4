@@ -4,6 +4,7 @@
     v-model="drawerIntern"
     app
     clipped
+    bottom
     :width="navigation.width"
   >
     <v-toolbar color="primary" flat>

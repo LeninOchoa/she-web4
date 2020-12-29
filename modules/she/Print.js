@@ -1,7 +1,6 @@
 import printJS from 'print-js'
 
 export function PrintImages(src) {
-  console.log(src)
   printJS({
     printable: [src],
     type: 'image',

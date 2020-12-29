@@ -192,7 +192,6 @@ export default {
       PrintImages(param.src)
     },
     drawerClick() {
-      console.log('drawerClick', this.drawerLeft)
       this.setDrawerL(!this.drawerLeft)
     },
   },
