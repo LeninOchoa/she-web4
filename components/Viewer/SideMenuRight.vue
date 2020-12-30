@@ -14,7 +14,7 @@
       <v-row class="fill-height" no-gutters>
         <v-col md="auto" :cols="colLeft">
           <v-navigation-drawer mini-variant mini-variant-width="60" permanent>
-            <v-list-item class="px-2 py-2">
+            <v-list-item class="px-2">
               <v-btn v-if="!mini" icon @click="onClickMini">
                 <v-icon>mdi-chevron-right</v-icon>
               </v-btn>

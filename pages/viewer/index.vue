@@ -4,7 +4,7 @@
     <SideMenu></SideMenu>
     <SideMenuRight></SideMenuRight>
 
-    <v-toolbar color="primary" flat>
+    <v-toolbar color="primary" flat dense>
       <v-app-bar-nav-icon
         class="white--text"
         @click="drawerClick"

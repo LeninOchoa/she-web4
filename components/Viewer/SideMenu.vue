@@ -7,7 +7,7 @@
     bottom
     :width="navigation.width"
   >
-    <v-toolbar color="primary" flat>
+    <v-toolbar color="primary" flat dense>
       <v-container fluid>
         <v-row align="center">
           <v-col align-self="center" class="mt-5">

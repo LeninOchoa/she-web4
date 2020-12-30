@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 
 export default {
-  async authenticateUser(context, authData) {
+  async authenticateUser(vuexContext, authData) {
     const authUrl = process.env.baseUrl + '/token'
     const body = `grant_type=password&username=${authData.login}&password=${authData.password}&scope=viewer`
     return await this.$axios({
@@ -11,17 +11,22 @@ export default {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
       .then((result) => {
-        context.commit('setToken', result.data.access_token)
+        const expiredIn = Number.parseInt(result.data.expires_in) * 1000
+        vuexContext.commit('setToken', result.data.access_token)
         localStorage.setItem('token', result.data.access_token)
         localStorage.setItem(
           'tokenExpiration',
-          new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000
+          new Date().getTime() + expiredIn
         )
         Cookies.set('jwt', result.data.access_token)
-        Cookies.set(
-          'expirationDate',
-          new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000
-        )
+        Cookies.set('expirationDate', new Date().getTime() + expiredIn)
+
+        vuexContext.commit('she/leftTimeSessionCounter', expiredIn, {
+          root: true,
+        })
+        vuexContext.commit('she/showSessionCounter', true, {
+          root: true,
+        })
         return true
       })
       .catch((e) => {
@@ -31,8 +36,11 @@ export default {
       })
   },
   setLogoutTimer(vuexContext, duration) {
-    setTimeout(() => {
-      vuexContext.commit('clearToken')
+    setTimeout(async () => {
+      await vuexContext.dispatch('logout')
+      window.onNuxtReady(() => {
+        window.$nuxt.$router.push('/')
+      })
     }, duration)
   },
   initAuth(vuexContext, req) {
@@ -72,12 +80,19 @@ export default {
     Cookies.remove('jwt')
     Cookies.remove('expirationDate')
     vuexContext.commit('she/setFrauParameter', null, { root: true })
-    vuexContext.rootState.she.frauParameter = null
     if (process.client) {
       localStorage.removeItem('token')
       localStorage.removeItem('tokenExpiration')
       if (token === null) return
       const logoutUrl = process.env.baseUrl + '/api/account/logout'
+
+      vuexContext.commit('she/showSessionCounter', false, {
+        root: true,
+      })
+
+      vuexContext.commit('she/leftTimeSessionCounter', 0, {
+        root: true,
+      })
       return await this.$axios({
         method: 'get',
         url: logoutUrl,
