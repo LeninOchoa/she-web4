@@ -2,7 +2,7 @@
   <div>
     <!--The SideMenu Component go here-->
     <SideMenu></SideMenu>
-    <SideMenuRight :drawer-r="drawerR"></SideMenuRight>
+    <SideMenuRight></SideMenuRight>
 
     <v-toolbar color="primary" flat>
       <v-app-bar-nav-icon
@@ -100,7 +100,6 @@ export default {
   },
   data() {
     return {
-      drawerR: true, // true to show/hide the side navigation drawer
       viewer: null,
       contentBuffer: [],
       ima: null,

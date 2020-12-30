@@ -3,7 +3,6 @@
     <v-navigation-drawer
       v-if="!$vuetify.breakpoint.xsOnly"
       ref="drawer"
-      v-model="drawerR"
       app
       clipped
       permanent
@@ -13,14 +12,14 @@
       width="30%"
     >
       <v-row class="fill-height" no-gutters>
-        <v-col md="auto">
+        <v-col md="auto" :cols="colLeft">
           <v-navigation-drawer mini-variant mini-variant-width="60" permanent>
             <v-list-item class="px-2 py-2">
-              <v-btn v-if="!mini" icon @click.stop="mini = !mini">
+              <v-btn v-if="!mini" icon @click="onClickMini">
                 <v-icon>mdi-chevron-right</v-icon>
               </v-btn>
-              <v-btn v-else icon @click.stop="mini = !mini">
-                <v-icon>mdi-chevron-right</v-icon>
+              <v-btn v-else icon @click="onClickMini">
+                <v-icon>mdi-chevron-left</v-icon>
               </v-btn>
             </v-list-item>
 
@@ -35,7 +34,7 @@
             </v-list>
           </v-navigation-drawer>
         </v-col>
-        <v-col v-show="!mini" style="max-width: 100%">
+        <v-col v-show="!mini" :cols="colRight">
           <Infos v-show="info"></Infos>
           <Archiv v-show="!info"></Archiv>
         </v-col>
@@ -46,18 +45,13 @@
 
 <script>
 export default {
-  props: {
-    drawerR: {
-      type: Boolean,
-      default: true,
-    },
-  },
   data: () => ({
-    drawer: true,
     items: [
       { title: 'Information', icon: 'mdi-information-outline' },
       { title: 'Archiv', icon: 'mdi-archive' },
     ],
+    colLeft: 11,
+    colRight: 0,
     mini: true,
     info: true,
     navigation: {
@@ -119,6 +113,16 @@ export default {
     },
     tabsEvent(item) {
       this.info = item.title === 'Information'
+    },
+    onClickMini() {
+      this.mini = !this.mini
+      if (this.min) {
+        this.colRight = 1
+        this.colLeft = 11
+      } else {
+        this.colLeft = 2
+        this.colRight = 10
+      }
     },
   },
 }
