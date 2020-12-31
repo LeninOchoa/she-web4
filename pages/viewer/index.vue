@@ -9,80 +9,96 @@
         class="white--text"
         @click="drawerClick"
       ></v-app-bar-nav-icon>
+
+      <v-tabs v-model="tab" align-with-title dark>
+        <v-tabs-slider color="white"></v-tabs-slider>
+        <v-tab key>Viewer</v-tab>
+        <v-tab>Merken</v-tab>
+      </v-tabs>
+
       <v-spacer></v-spacer>
-      <v-btn id="zoom-out" icon dark>
+      <v-btn v-show="tab === 0" id="zoom-out" icon dark>
         <v-icon>mdi-magnify-minus-outline</v-icon>
       </v-btn>
 
-      <v-btn id="zoom-in" icon dark>
+      <v-btn v-show="tab === 0" id="zoom-in" icon dark>
         <v-icon>mdi-magnify-plus-outline</v-icon>
       </v-btn>
 
-      <v-btn id="home" icon dark>
+      <v-btn v-show="tab === 0" id="home" icon dark>
         <v-icon>mdi-home-outline</v-icon>
       </v-btn>
 
-      <v-btn id="full-page" icon dark>
+      <v-btn v-show="tab === 0" id="full-page" icon dark>
         <v-icon>mdi-fullscreen</v-icon>
       </v-btn>
 
-      <v-btn id="rotate-left" icon dark>
+      <v-btn v-show="tab === 0" id="rotate-left" icon dark>
         <v-icon>mdi-rotate-left</v-icon>
       </v-btn>
 
-      <v-btn id="rotate-right" icon dark>
+      <v-btn v-show="tab === 0" id="rotate-right" icon dark>
         <v-icon>mdi-rotate-right</v-icon>
       </v-btn>
     </v-toolbar>
 
-    <v-container fluid>
-      <v-row wrap no-gutters>
-        <div
-          id="viewer-image"
-          ref="image"
-          style="width: 100%; height: 65vh; position: relative"
-        />
-      </v-row>
-      <v-row>
-        <div class="parent">
-          <v-hover
-            v-for="card in cards"
-            v-slot="{ hover }"
-            :key="card.index"
-            class="hoverCursor"
-            open-delay="50"
-          >
-            <v-card
-              :elevation="hover ? 16 : 2"
-              :class="{ 'on-hover': hover }"
-              class="ma-5"
-            >
-              <v-img
-                :src="card.src"
-                max-height="150"
-                max-width="150"
-                min-height="150"
-                min-width="150"
-                @click="activateCard(card)"
+    <v-tabs-items v-model="tab">
+      <v-tab-item :eager="true">
+        <v-container fluid>
+          <v-row wrap no-gutters>
+            <div
+              id="viewer-image"
+              ref="image"
+              style="width: 100%; height: 65vh; position: relative"
+            />
+          </v-row>
+          <v-row>
+            <div class="parent">
+              <v-hover
+                v-for="card in cards"
+                v-slot="{ hover }"
+                :key="card.index"
+                class="hoverCursor"
+                open-delay="50"
               >
-              </v-img>
-              <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-card
+                  :elevation="hover ? 16 : 2"
+                  :class="{ 'on-hover': hover }"
+                  class="ma-5"
+                >
+                  <v-img
+                    :src="card.src"
+                    max-height="150"
+                    max-width="150"
+                    min-height="150"
+                    min-width="150"
+                    @click="activateCard(card)"
+                  >
+                  </v-img>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
 
-                <v-btn icon @click="checkMark(card)">
-                  <v-icon v-if="card.marked">mdi-checkbox-marked</v-icon>
-                  <v-icon v-else>mdi-checkbox-blank-outline</v-icon>
-                </v-btn>
+                    <v-btn icon @click="checkMark(card)">
+                      <v-icon v-if="card.marked">mdi-checkbox-marked</v-icon>
+                      <v-icon v-else>mdi-checkbox-blank-outline</v-icon>
+                    </v-btn>
 
-                <v-btn icon @click="printer(card)">
-                  <v-icon>mdi-printer</v-icon>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-hover>
-        </div>
-      </v-row>
-    </v-container>
+                    <v-btn icon @click="printer(card)">
+                      <v-icon>mdi-printer</v-icon>
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-hover>
+            </div>
+          </v-row>
+        </v-container>
+      </v-tab-item>
+      <v-tab-item :eager="true">
+        <v-container fluid>
+          <p>TEST</p>
+        </v-container>
+      </v-tab-item>
+    </v-tabs-items>
   </div>
 </template>
 
@@ -100,6 +116,10 @@ export default {
   },
   data() {
     return {
+      tab: null,
+      items: ['web', 'shopping', 'videos', 'images', 'news'],
+      text:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       viewer: null,
       contentBuffer: [],
       ima: null,
