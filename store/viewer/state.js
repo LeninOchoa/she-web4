@@ -7,4 +7,5 @@ export default () => ({
   searchedTree: [],
   ebeneInfos: [],
   drawerL: true,
+  noticedPictures: null,
 })

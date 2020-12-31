@@ -13,7 +13,7 @@
       <v-tabs v-model="tab" align-with-title dark>
         <v-tabs-slider color="white"></v-tabs-slider>
         <v-tab key>Viewer</v-tab>
-        <v-tab>Merken</v-tab>
+        <v-tab v-show="ShowViewer">gemerkte Bilder</v-tab>
       </v-tabs>
 
       <v-spacer></v-spacer>
@@ -44,58 +44,11 @@
 
     <v-tabs-items v-model="tab">
       <v-tab-item :eager="true">
-        <v-container fluid>
-          <v-row wrap no-gutters>
-            <div
-              id="viewer-image"
-              ref="image"
-              style="width: 100%; height: 65vh; position: relative"
-            />
-          </v-row>
-          <v-row>
-            <div class="parent">
-              <v-hover
-                v-for="card in cards"
-                v-slot="{ hover }"
-                :key="card.index"
-                class="hoverCursor"
-                open-delay="50"
-              >
-                <v-card
-                  :elevation="hover ? 16 : 2"
-                  :class="{ 'on-hover': hover }"
-                  class="ma-5"
-                >
-                  <v-img
-                    :src="card.src"
-                    max-height="150"
-                    max-width="150"
-                    min-height="150"
-                    min-width="150"
-                    @click="activateCard(card)"
-                  >
-                  </v-img>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-
-                    <v-btn icon @click="checkMark(card)">
-                      <v-icon v-if="card.marked">mdi-checkbox-marked</v-icon>
-                      <v-icon v-else>mdi-checkbox-blank-outline</v-icon>
-                    </v-btn>
-
-                    <v-btn icon @click="printer(card)">
-                      <v-icon>mdi-printer</v-icon>
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-hover>
-            </div>
-          </v-row>
-        </v-container>
+        <MainViewer></MainViewer>
       </v-tab-item>
       <v-tab-item :eager="true">
         <v-container fluid>
-          <p>TEST</p>
+          <MerkenViewer></MerkenViewer>
         </v-container>
       </v-tab-item>
     </v-tabs-items>
@@ -103,131 +56,37 @@
 </template>
 
 <script>
-import SideMenu from '@/components/Viewer/SideMenu.vue' // import the SideMenu component
-import OpenSeadragon from 'openseadragon'
-import SideMenuRight from '@/components/Viewer/SideMenuRight'
-import { PrintImages } from '@/modules/she/Print'
-import { mapMutations, mapState } from 'vuex'
-window.OpenSeadragon = OpenSeadragon
+import MainViewer from '@/components/Viewer/MainViewer.vue'
+import MerkenViewer from '@/components/Viewer/MerkenViewer.vue'
+import { mapGetters, mapMutations, mapState } from 'vuex'
+import SideMenuRight from '~/components/Viewer/SideMenuRight/SideMenuRight'
+import SideMenu from '~/components/Viewer/SideMenu/SideMenu.vue'
+
 export default {
   components: {
     SideMenuRight,
     SideMenu,
+    MainViewer,
+    MerkenViewer,
   },
   data() {
     return {
       tab: null,
-      items: ['web', 'shopping', 'videos', 'images', 'news'],
-      text:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      viewer: null,
-      contentBuffer: [],
-      ima: null,
-      images: [],
-      imageUrls: {},
-      cards: [],
     }
   },
   computed: {
-    storeImages() {
-      return this.$store.state.viewer.images
-    },
     ...mapState({
       drawerLeft: (state) => state.viewer.drawerL,
     }),
-  },
-  watch: {
-    storeImages(newCount, oldCount) {
-      this.imageUrls = newCount
-      this.ShowPictures()
-    },
-  },
-  mounted() {
-    if (this.viewer === null) this.initViewer()
-    this.$root.$on('clearViewer', () => {
-      this.clearViewer()
-    })
+    ...mapGetters({
+      ShowViewer: 'viewer/isExistedNoticedPictures',
+    }),
   },
   methods: {
     ...mapMutations({ setDrawerL: 'viewer/setDrawerL' }),
-    ShowPictures() {
-      // this.clearViewer()
-      const imgs = []
-      for (let index = 0; index < this.imageUrls.length; ++index) {
-        const item = this.imageUrls[index]
-        imgs.push({
-          index,
-          src: item,
-          marked: false,
-        })
-      }
-      if (imgs.length > 0) {
-        this.activateCard(imgs[0])
-      }
-      this.cards = imgs
-    },
-    initViewer() {
-      this.viewer = OpenSeadragon({
-        id: 'viewer-image',
-        animationTime: 0.4,
-        prefixUrl: '/assets/images/',
-        // showNavigator: true,
-        sequenceMode: true,
-        // showReferenceStrip: true,
-        // referenceStripScroll: 'vertical',
-        showRotationControl: true,
-        preserveViewport: true,
-        zoomInButton: 'zoom-in',
-        zoomOutButton: 'zoom-out',
-        homeButton: 'home',
-        fullPageButton: 'full-page',
-        rotateLeftButton: 'rotate-left',
-        rotateRightButton: 'rotate-right',
-        tileSources: this.files,
-        // Enable touch rotation on tactile devices
-        gestureSettingsTouch: {
-          pinchRotate: true,
-        },
-      })
-    },
-    clearViewer() {
-      this.images = []
-      this.viewer.world.resetItems()
-      this.viewer.tileSources = []
-      this.viewer.open(this.images)
-    },
-    activateCard(param) {
-      this.clearViewer()
-      this.images.push({
-        type: 'image',
-        url: param.src,
-      })
-      this.viewer.open(this.images)
-    },
-    checkMark(param) {
-      param.marked = !param.marked
-    },
-    printer(param) {
-      PrintImages(param.src)
-    },
     drawerClick() {
       this.setDrawerL(!this.drawerLeft)
     },
   },
 }
 </script>
-
-<style scoped>
-.parent {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  overflow-x: auto;
-}
-.hoverCursor:hover {
-  cursor: pointer;
-}
-</style>

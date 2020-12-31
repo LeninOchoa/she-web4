@@ -43,8 +43,8 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import Search from '@/components/She/Search'
-import Treeview from '@/components/Viewer/Treeview'
+import Search from '~/components/She/Search'
+import Treeview from '~/components/Viewer/SideMenu/Treeview'
 export default {
   components: { Search, Treeview },
   data: () => ({

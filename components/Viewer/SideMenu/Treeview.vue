@@ -47,7 +47,7 @@ import {
   searchRootNodes,
   loadChildren,
   GetInformation,
-} from '@/modules/viewer/ViewerService'
+} from '~/modules/viewer/ViewerService'
 export default {
   data: () => ({
     files: {

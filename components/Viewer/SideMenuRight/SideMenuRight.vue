@@ -44,7 +44,13 @@
 </template>
 
 <script>
+import Infos from '~/components/Viewer/SideMenuRight/Infos'
+import Archiv from '~/components/Viewer/SideMenuRight/Archiv'
 export default {
+  components: {
+    Infos,
+    Archiv,
+  },
   data: () => ({
     items: [
       { title: 'Information', icon: 'mdi-information-outline' },

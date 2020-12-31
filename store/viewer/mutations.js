@@ -25,4 +25,15 @@ export default {
   setDrawerL(state, payload) {
     state.drawerL = payload
   },
+  setNoticedPictures(state, pic) {
+    if (state.noticedPictures === null) {
+      state.noticedPictures = [pic]
+      return
+    }
+    state.noticedPictures.push(pic)
+  },
+  DeleteNoticedPictures(state, pic) {
+    if (state.noticedPictures === null) return false
+    return state.noticedPictures.length > 0
+  },
 }
