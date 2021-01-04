@@ -32,7 +32,7 @@ export default {
     }
     state.noticedPictures.push(pic)
   },
-  DeleteNoticedPictures(state, pic) {
+  deleteNoticedPictures(state, pic) {
     if (state.noticedPictures === null) return false
     return state.noticedPictures.length > 0
   },

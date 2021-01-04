@@ -87,7 +87,11 @@ export default {
     })
   },
   methods: {
-    ...mapMutations({ setDrawerL: 'viewer/setDrawerL' }),
+    ...mapMutations({
+      setDrawerL: 'viewer/setDrawerL',
+      setNoticedPictures: 'viewer/setNoticedPictures',
+      deleteNoticedPictures: 'viewer/deleteNoticedPictures',
+    }),
     ShowPictures() {
       // this.clearViewer()
       const imgs = []
@@ -143,6 +147,11 @@ export default {
       this.viewer.open(this.images)
     },
     checkMark(param) {
+      if (param.marked === false ) {
+        this.setNoticedPictures( {param.files, param.imageUrls} )
+      } else {
+
+      }
       param.marked = !param.marked
     },
     printer(param) {
